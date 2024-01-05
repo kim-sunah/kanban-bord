@@ -1,4 +1,4 @@
-.env
+/.env
 
 # compiled output
 /dist
@@ -36,4 +36,4 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 
-a.txt
+/a.txt
