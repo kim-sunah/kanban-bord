@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {InCharge} from '../../card/entities/in-charge.entity'
 
 @Entity({
   name: 'user',
@@ -15,4 +16,7 @@ export class User {
 
   @Column({ type: 'varchar', nullable: false })
   name: string;
+  
+  @OneToMany(() => InCharge, inCharge => inCharge.user)
+  inCharges: InCharge[]
 }
