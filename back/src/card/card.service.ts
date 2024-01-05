@@ -1,8 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import {Card} from './entities/card.entity'
 import {InCharge} from './entities/in-charge.entity'
-import { Repository } from 'typeorm'
+import { DataSource, Repository } from 'typeorm'
 import {CardDto, UpdateCardDto} from './dto/card.dto'
 
 @Injectable()
@@ -11,18 +11,21 @@ export class CardService {
         @InjectRepository(Card)
         private readonly cardRepository: Repository<Card>,
         @InjectRepository(InCharge)
-        private readonly inChargeRepository: Repository<InCharge>
+        private readonly inChargeRepository: Repository<InCharge>,
+		private readonly dataSource: DataSource
     ) {}
-	
-	// 카드 만들기
-	async createCard(cardDto: CardDto, columnSeq: number){
-		// 컬럼에서 position 가져오는거 추가
-		await this.cardRepository.insert({...cardDto,position:1,columnSeq})
-	}
 	
 	// 특정 컬럼의 카드 목록 보기
 	async getCardsByColumn(columnSeq: number){
 		return await this.cardRepository.find({where:{columnSeq}})
+	}
+	
+	// 카드 만들기
+	async createCard(cardDto: CardDto, columnSeq: number){
+		// 현재 컬럼에 있는 카드의 포지션 중 최대값 찾기
+		let {position} = await this.cardRepository.createQueryBuilder('card').select('MAX(card.position)','position').where('card.columnSeq = :id',{id:columnSeq}).getRawOne()
+		position = (position || 0)+1
+		await this.cardRepository.insert({...cardDto,position,columnSeq})
 	}
 	
 	// 특정 카드 찾기
@@ -38,8 +41,61 @@ export class CardService {
 		return card
 	}
 	
+	// 컬럼에서 카드 한칸 위로 올리기
+	async cardUp(cardSeq: number){
+		const card = await this.findCard(cardSeq)
+		if(!card) throw new NotFoundException('해당 카드를 찾을 수 없습니다.')
+		const {position,columnSeq} = card
+		console.log(columnSeq,position)
+		const {prevPosition} = await this.cardRepository.createQueryBuilder('card').select('MAX(card.position)','prevPosition').where('card.columnSeq = :id',{id:columnSeq}).andWhere('card.position < :pos',{pos:position}).getRawOne()
+		if(!prevPosition) throw new BadRequestException('카드가 이미 맨 위에 있습니다.')
+		// 트랜잭션
+		const queryRunner = this.dataSource.createQueryRunner()
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
+		try{
+			card.position = -1
+			await queryRunner.manager.save(card)
+			await queryRunner.manager.update(Card,{columnSeq,position:prevPosition},{position})
+			card.position = prevPosition
+			await queryRunner.manager.save(card)
+			await queryRunner.commitTransaction()
+		} catch (e) {
+            await queryRunner.rollbackTransaction()
+            throw e
+        } finally {
+            await queryRunner.release()
+        }
+	}
+	
+	// 컬럼에서 카드 한칸 아래로 내리기
+	async cardDown(cardSeq: number){
+		const card = await this.findCard(cardSeq)
+		if(!card) throw new NotFoundException('해당 카드를 찾을 수 없습니다.')
+		const {position,columnSeq} = card
+		console.log(columnSeq,position)
+		const {nextPosition} = await this.cardRepository.createQueryBuilder('card').select('MIN(card.position)','nextPosition').where('card.columnSeq = :id',{id:columnSeq}).andWhere('card.position > :pos',{pos:position}).getRawOne()
+		if(!nextPosition) throw new BadRequestException('카드가 이미 맨 아래에 있습니다.')
+		// 트랜잭션
+		const queryRunner = this.dataSource.createQueryRunner()
+        await queryRunner.connect()
+        await queryRunner.startTransaction()
+		try{
+			card.position = -1
+			await queryRunner.manager.save(card)
+			await queryRunner.manager.update(Card,{columnSeq,position:nextPosition},{position})
+			card.position = nextPosition
+			await queryRunner.manager.save(card)
+			await queryRunner.commitTransaction()
+		} catch (e) {
+            await queryRunner.rollbackTransaction()
+            throw e
+        } finally {
+            await queryRunner.release()
+        }
+	}
+	
 	// 카드 삭제
-	// 뒷 position 하나씩 당겨오는 거 추가
 	async deleteCard(cardSeq: number){
 		await this.cardRepository.delete(cardSeq)
 	}

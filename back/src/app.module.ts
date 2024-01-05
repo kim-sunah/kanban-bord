@@ -29,7 +29,6 @@ const typeOrmModuleOptions = {
   inject: [ConfigService],
 };
 @Module({
-<<<<<<< HEAD
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
@@ -51,10 +50,5 @@ const typeOrmModuleOptions = {
   ],
   controllers: [],
   providers: [],
-=======
-  imports: [CardModule],
-  controllers: [AppController],
-  providers: [AppService],
->>>>>>> 45dad672a968eef391b0983381e28400d8fb9c11
 })
 export class AppModule {}

@@ -30,6 +30,20 @@ export class CardController {
 		return {message: '카드가 수정되었습니다.', card}
 	}
 	
+	// 컬럼에서 카드 한칸 위로 올리기
+	@Patch(':id/up')
+	async cardUp(@Param() params: Id){
+		await this.cardService.cardUp(params.id)
+		return {message: '카드를 위로 한 칸 올렸습니다.'}
+	}
+	
+	// 컬럼에서 카드 한칸 아래로 내리기
+	@Patch(':id/down')
+	async cardDown(@Param() params: Id){
+		await this.cardService.cardDown(params.id)
+		return {message: '카드를 아래로 한 칸 내렸습니다.'}
+	}
+	
 	// 카드 삭제
 	@Delete(':id')
 	@HttpCode(204)
