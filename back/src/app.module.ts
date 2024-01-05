@@ -10,6 +10,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CardModule } from './card/card.module';
+import { CommentModule } from './comment/comment.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -22,7 +23,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [__dirname + "/*/entities/*{.js,.ts}"],
+    entities: [__dirname + '/*/entities/*{.js,.ts}'],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
@@ -47,6 +48,7 @@ const typeOrmModuleOptions = {
     AuthModule,
     BoardModule,
     CardModule,
+    CommentModule,
   ],
   controllers: [],
   providers: [],
