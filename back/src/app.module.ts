@@ -9,6 +9,8 @@ import { BoardModule } from './board/board.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { Board } from './board/entities/board.entity';
+import { Boarduser } from './board/entities/boadr_user.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -21,7 +23,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [User],
+    entities: [User,Board,Boarduser],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),

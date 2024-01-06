@@ -1,29 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { UserInfo } from 'src/utils/userInfo.decorator';
+import { User } from 'src/user/entities/user.entity';
 
 @Controller('board')
+@UseGuards(AuthGuard("jwt"))
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
   @Post()
-  create(@Body() createBoardDto: CreateBoardDto) {
-    return this.boardService.create(createBoardDto);
+  create(@Body() createBoardDto: CreateBoardDto, @UserInfo() user : User) {
+    return this.boardService.create(createBoardDto,user);
   }
 
-  @Post('/invite/:userId')
-  inviteUser(@Param('userId') userId: string) {
-    return this.boardService.inviteUser(+userId);
+  @Post(':boardId/invite')
+  inviteUser(@Param('boardId') boardId: string,@Body('userId') userId : number) {
+    return this.boardService.inviteUser(+boardId, userId);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
-    return this.boardService.update(+id, updateBoardDto);
+  update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto,  @UserInfo() user : User) {
+    return this.boardService.update(+id, updateBoardDto, user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.boardService.remove(+id );
+  remove(@Param('id') id: string,  @UserInfo() user : User) {
+    return this.boardService.remove(+id, user );
   }
 }

@@ -1,4 +1,4 @@
-import { IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 export class CreateBoardDto {
     @IsString()
     name : string
@@ -8,5 +8,9 @@ export class CreateBoardDto {
 
     @IsString()
     description : string
+
+    @IsNumber()
+    @IsOptional()
+    userId : number
 
 }
