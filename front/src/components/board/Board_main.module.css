@@ -1,0 +1,40 @@
+body{
+    height: 100%;
+}
+.sidebar{
+    display: flex;         /* d-flex */
+    flex-direction: column; /* flex-column */
+    flex-shrink: 0;         /* flex-shrink-0 */
+    padding: 1rem;          /* p-3 */
+    background-color: gray; /* bg-light */
+    height: 100%;
+}
+.li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* 원하는 간격을 픽셀 또는 다른 단위로 지정합니다. */
+   
+}
+li{
+    margin-left: 10%;
+    margin-top: 10%;
+}
+
+  
+.text {
+    margin-right: 40%; /* 텍스트와 아이콘 사이 좌측 간격을 20px로 지정합니다. */
+    margin-left: 10px;
+}
+.narrowInput {
+    width: 50px;
+  }
+.create{
+    text-align: center;
+    gap: 10%;
+    
+}
+
+.create input{
+    border-radius: 5%;
+}
+  
