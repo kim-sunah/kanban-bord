@@ -1,9 +1,11 @@
 
 import {createBrowserRouter, RouterProvider} from "react-router-dom"
 import Boardmain from "./components/board/Board_main";
-
+import Boardbody from "./components/board/Board_body";
 const router= createBrowserRouter([
-  {path : "/" , element : <Boardmain></Boardmain>}
+  {path : "/" , element : <Boardmain></Boardmain>,children :[
+    {path : ":id/:title" ,element : <Boardbody></Boardbody>}
+  ]}
   
 ])
 

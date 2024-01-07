@@ -15,10 +15,15 @@ export class BoardController {
   create(@Body() createBoardDto: CreateBoardDto, @UserInfo() user : User) {
     return this.boardService.create(createBoardDto,user);
   }
+  @Get()
+  async find(@UserInfo() user : User){
+    return  await this.boardService.find(user)
+  }
 
   @Post(':boardId/invite')
-  inviteUser(@Param('boardId') boardId: string,@Body('userId') userId : number) {
-    return this.boardService.inviteUser(+boardId, userId);
+  inviteUser(@Param('boardId') boardId: string,@Body('email') email : string) {
+
+    return this.boardService.inviteUser(+boardId, email);
   }
 
   @Patch(':id')

@@ -20,11 +20,23 @@ export class BoardService {
 
   }
 
-  async inviteUser(id: number, userId : number) {
-   const user = await this.userRepository.findOne({where : {userSeq : userId}})
+  async find(user : User){
+    
+   const board = await this.boardRepository.find({where : {userId : user.userSeq}})
+   return {statusCode : 200 , board}
+ 
+
+  }
+
+  async inviteUser(id: number, email : string) {
+   const user = await this.userRepository.findOne({where : {email : email}})
   
    if(_.isNil(user)){
       throw new NotFoundException("유저를 찾을수 없습니다.")
+   }
+   const boarduser = await this.boarduserRepository.find({where : {userId : user.userSeq}})
+   if(boarduser){
+    throw new BadRequestException("이미 초대된 유저입니다")
    }
 
    const board = await this.boardRepository.findOne({where : {id : id}})
@@ -37,6 +49,7 @@ export class BoardService {
   boardUser.userId = +user.userSeq;
 
   await this.boarduserRepository.save(boardUser);
+  return {statusCode : 200}
 
   }
 

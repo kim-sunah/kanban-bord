@@ -30,11 +30,15 @@ li{
   }
 .create{
     text-align: center;
-    gap: 10%;
+
     
 }
 
 .create input{
     border-radius: 5%;
+}
+
+.Link{
+    list-style: none;
 }
   
