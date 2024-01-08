@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Card } from './entities/card.entity';
 import { InCharge } from './entities/in-charge.entity';
+import { BoardColumn } from '../column/entities/column.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CardDto, UpdateCardDto } from './dto/card.dto';
 
@@ -14,6 +15,8 @@ export class CardService {
   constructor(
     @InjectRepository(Card)
     private readonly cardRepository: Repository<Card>,
+	@InjectRepository(BoardColumn)
+    private readonly columnRepository: Repository<BoardColumn>,
     @InjectRepository(InCharge)
     private readonly inChargeRepository: Repository<InCharge>,
     private readonly dataSource: DataSource,
@@ -115,12 +118,27 @@ export class CardService {
     if (!card) throw new NotFoundException('해당 카드를 찾을 수 없습니다.');
     if (columnSeq === card.columnSeq)
       throw new BadRequestException('카드가 이미 해당 컬럼에 있습니다.');
-    const position = (await this.maxPosition(columnSeq)) + 1;
+	
+	const newColumn = await this.columnRepository.findOne({where:{id:columnSeq}})
+	if(!newColumn) throw new BadRequestException('해당 컬럼을 찾을 수 없습니다.');
+	const column = await this.columnRepository.findOne({where:{id:card.columnSeq}})
+	if(column.board_id!==newColumn.board_id) throw new BadRequestException('다른 보드로 이동할 수 없습니다.');
+	const position = (await this.maxPosition(columnSeq)) + 1;
     await this.cardRepository.update({ cardSeq }, { position, columnSeq });
   }
 
   // 카드 삭제
   async deleteCard(cardSeq: number) {
     await this.cardRepository.delete(cardSeq);
+  }
+  
+  // 작업자 추가
+  async createCharge(cardSeq: number, userSeq: number){
+	await this.inChargeRepository.insert({cardSeq,userSeq})
+  }
+  
+  // 작업자 삭제
+  async deleteCharge(cardSeq: number, userSeq: number){
+	await this.inChargeRepository.delete({cardSeq,userSeq})
   }
 }

@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Board } from 'src/board/entities/board.entity';
 import { User } from '../../user/entities/user.entity';
+import { Card } from '../../card/entities/card.entity';
 
 @Entity({
   name: 'boardcolumn',
@@ -29,4 +30,7 @@ export class BoardColumn {
 
   @Column({ type: 'bigint', name: 'user_id' })
   user_id: number;
+  
+  @OneToMany(() => Card, (card) => card.column)
+  cards: Card[];
 }
