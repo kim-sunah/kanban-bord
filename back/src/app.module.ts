@@ -11,6 +11,8 @@ import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { CardModule } from './card/card.module';
 import { CommentModule } from './comment/comment.module';
+import { Board } from './board/entities/board.entity';
+import { Boarduser } from './board/entities/boadr_user.entity';
 
 const typeOrmModuleOptions = {
   useFactory: async (
