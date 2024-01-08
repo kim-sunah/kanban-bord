@@ -9,8 +9,6 @@ import { BoardModule } from './board/board.module';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
-import { CardModule } from './card/card.module';
-import { CommentModule } from './comment/comment.module';
 import { Board } from './board/entities/board.entity';
 import { Boarduser } from './board/entities/boadr_user.entity';
 
@@ -25,7 +23,7 @@ const typeOrmModuleOptions = {
     host: configService.get('DB_HOST'),
     port: configService.get('DB_PORT'),
     database: configService.get('DB_NAME'),
-    entities: [__dirname + '/*/entities/*{.js,.ts}'],
+    entities: [User,Board,Boarduser],
     synchronize: configService.get('DB_SYNC'),
     logging: true,
   }),
@@ -49,8 +47,6 @@ const typeOrmModuleOptions = {
     UserModule,
     AuthModule,
     BoardModule,
-    CardModule,
-    CommentModule,
   ],
   controllers: [],
   providers: [],
