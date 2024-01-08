@@ -21,6 +21,8 @@ const ColumnTemp = (props) => {
 	const handleShow = () => setShow(true)
 	const handleClose = () => setShow(false)
 	
+	
+	// 카드 생성
 	const createCard = async (e,body) => {
 		e.preventDefault()
 		const res = await fetch(server+`/card/column/${props.columnSeq}`, {
@@ -33,6 +35,7 @@ const ColumnTemp = (props) => {
 		handleClose()
 	}
 	
+	// 카드 삭제
 	const deleteCard = async (e,cardSeq) => {
 		e.preventDefault()
 		await fetch(server+`/card/${cardSeq}`, {
@@ -41,6 +44,7 @@ const ColumnTemp = (props) => {
 		setCards(cards.filter(card => card.cardSeq!==cardSeq))
 	}
 	
+	// 카드 위로 한 칸 이동
 	const up = async (e,cardSeq) => {
 		e.preventDefault()
 		await fetch(server+`/card/${cardSeq}/up`, {
@@ -48,12 +52,13 @@ const ColumnTemp = (props) => {
 			headers:{'Content-Type':'application/json', Authorization}})
 		const ind = cards.findIndex(card => card.cardSeq===cardSeq)
 		if(ind) setCards(cards.map((card,i) => {
-			if(i==ind) return cards[i-1]
-			else if(i==ind-1) return cards[i+1]
+			if(i===ind) return cards[i-1]
+			else if(i===ind-1) return cards[i+1]
 			return card
 		}))
 	}
 	
+	// 카드 아래로 한 칸 이동
 	const down = async (e,cardSeq) => {
 		e.preventDefault()
 		await fetch(server+`/card/${cardSeq}/down`, {
@@ -61,10 +66,14 @@ const ColumnTemp = (props) => {
 			headers:{'Content-Type':'application/json', Authorization}})
 		const ind = cards.findIndex(card => card.cardSeq===cardSeq)
 		if(ind<cards.length-1) setCards(cards.map((card,i) => {
-			if(i==ind) return cards[i+1]
-			else if(i==ind+1) return cards[i-1]
+			if(i===ind) return cards[i+1]
+			else if(i===ind+1) return cards[i-1]
 			return card
 		}))
+	}
+	
+	const handleShowMove = (e,cardSeq) => {
+		props.handleShowMove(e,cardSeq,props.columnSeq)
 	}
 	
 	return (
@@ -79,8 +88,8 @@ const ColumnTemp = (props) => {
 					<CardForm onSubmit={createCard} handleClose={handleClose} />
 				</Modal.Body>
 			</Modal>
-			{cards.map(card => <Cardbody key={card.cardSeq} card={card} deleteCard={deleteCard} up={up} down={down} />)}
-		</div>	
+			{cards.map(card => <Cardbody key={card.cardSeq} card={card} deleteCard={deleteCard} up={up} down={down} handleShowMove={handleShowMove} />)}
+		</div>
 	)
 }
 

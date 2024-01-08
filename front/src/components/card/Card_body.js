@@ -65,6 +65,7 @@ const Cardbody = (props) => {
 			<Button onClick={handleShow} className='me-1'>{name}</Button>
 			<Button onClick={e => props.up(e,cardSeq)} className='me-1'> ↑</Button>
 			<Button onClick={e => props.down(e,cardSeq)}>↓</Button>
+			
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header>
                     <Modal.Title>{name} ~{deadline.slice(0,10)}</Modal.Title>
@@ -73,13 +74,15 @@ const Cardbody = (props) => {
 					{description}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button onClick={handleShowCharge}>작업자 목록</Button>
+					<Button onClick={e => props.handleShowMove(e,cardSeq)}>컬럼 변경</Button>
+					<Button onClick={handleShowCharge}>작업자</Button>
 					<Button onClick={handleShowComment}>댓글</Button>
 					<Button onClick={handleShowUpdate}>수정</Button>
 					<Button onClick={e => props.deleteCard(e,cardSeq)}>삭제</Button>
 					<Button onClick={handleClose}>닫기</Button>
 				</Modal.Footer>
 			</Modal>
+			
 			<Modal show={showUpdate} onHide={handleCloseUpdate}>
 				<Modal.Header>
                     <Modal.Title>카드 수정</Modal.Title>
@@ -88,6 +91,7 @@ const Cardbody = (props) => {
 					<CardForm onSubmit={updateCard} handleClose={handleCloseUpdate} name={name} color={color} description={description} deadline={deadline} tag='수정' />
 				</Modal.Body>
 			</Modal>
+			
 			<Modal show={showCharge} onHide={handleCloseCharge}>
 				<Modal.Header>
                     <Modal.Title>작업자 목록</Modal.Title>
@@ -98,6 +102,7 @@ const Cardbody = (props) => {
 					<Button onClick={handleCloseCharge}>닫기</Button>
 				</Modal.Footer>
 			</Modal>
+			
 			<Modal show={showComment} onHide={handleCloseComment}>
 				<Modal.Header>
                     <Modal.Title>댓글</Modal.Title>
