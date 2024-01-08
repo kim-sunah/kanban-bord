@@ -13,11 +13,11 @@ const Cardmain = props => {
 			setColumns(await Promise.all(columnSeqs.map(async columnSeq => <ColumnTemp key={columnSeq} columnSeq={columnSeq} />)))
 		}
 		getColumns()
-	},[])
+	},[columns])
 	return (
 		<Container>
 			<Row>
-				{columns.map(column => <Col>{column}</Col>)}
+				{columns.map((column,i) => <Col key={i}>{column}</Col>)}
 			</Row>
 		</Container>
 	)
