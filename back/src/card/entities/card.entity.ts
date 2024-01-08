@@ -3,12 +3,15 @@ import {
   Entity,
   Unique,
   OneToMany,
+  ManyToOne,
+  JoinColumn,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { InCharge } from './in-charge.entity';
 import { Comment } from '../../comment/entities/comment.entity';
+import { BoardColumn } from '../../column/entities/column.entity';
 
 @Entity({ name: 'card' })
 @Unique(['columnSeq', 'position'])
@@ -26,7 +29,10 @@ export class Card {
   @Column('varchar', { length: 50, nullable: true })
   color!: string;
 
-  // 컬럼 관계 추가
+  @ManyToOne(() => BoardColumn, column => column.cards, {onDelete: 'CASCADE'})
+  @JoinColumn({ name: 'column_seq' })
+  column: BoardColumn;
+  
   @Column('int')
   columnSeq: number;
 

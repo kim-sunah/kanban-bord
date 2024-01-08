@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Unique,
   ManyToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
@@ -9,6 +10,7 @@ import { Card } from './card.entity';
 import { User } from '../../user/entities/user.entity';
 
 @Entity({ name: 'in_charge' })
+@Unique(['cardSeq', 'userSeq'])
 export class InCharge {
   @PrimaryGeneratedColumn()
   inChargeSeq: number;

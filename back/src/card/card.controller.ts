@@ -14,7 +14,6 @@ import { CardDto, UpdateCardDto } from './dto/card.dto';
 import { Id } from '../utils/id';
 import { AuthGuard } from '@nestjs/passport';
 
-// 컬럼 추가
 @Controller('card')
 @UseGuards(AuthGuard('jwt')) // 해당 보드에 있는 사람만 만들게 해야 될듯?
 export class CardController {
@@ -66,5 +65,17 @@ export class CardController {
   @HttpCode(204)
   async deleteCard(@Param() params: Id) {
     await this.cardService.deleteCard(params.id);
+  }
+  
+  // 작업자 할당
+  @Post(':id/:userSeq')
+  async createCharge(@Param() params: Id) {
+	await this.cardService.createCharge(params.id, params.userSeq);
+  }
+  
+  // 작업자 삭제
+  @Delete(':id/:userSeq')
+  async deleteCharge(@Param() params: Id) {
+	await this.cardService.deleteCharge(params.id, params.userSeq);
   }
 }

@@ -1,4 +1,4 @@
-import {IsInt, Min, IsOptional} from 'class-validator'
+import {IsInt, Min, ValidateIf} from 'class-validator'
 import {Type} from 'class-transformer'
 
 export class Id {
@@ -7,9 +7,15 @@ export class Id {
     @Min(1)
     id: number
 	
-	@IsOptional()
+	@ValidateIf((o,v) => v != undefined)
 	@IsInt()
     @Type(() => Number)
     @Min(1)
-    columnSeq: number
+    columnSeq: number | undefined
+	
+	@ValidateIf((o,v) => v != undefined)
+	@IsInt()
+    @Type(() => Number)
+    @Min(1)
+    userSeq: number | undefined
 }
