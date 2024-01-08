@@ -8,7 +8,7 @@ const router= createBrowserRouter([
   {path : "/" , element : <Boardmain></Boardmain>,children :[
     {path : ":id/:title" ,element : <Boardbody></Boardbody>}
   ]},
-  {path : "/card" ,element : <Cardmain></Cardmain>}
+  {path : "/card", search: "?id=id" ,element : <Cardmain />}
 ])
 
 function App() {

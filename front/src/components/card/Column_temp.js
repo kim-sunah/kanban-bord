@@ -6,21 +6,22 @@ import Button from 'react-bootstrap/Button'
 import CardForm from './Card_form'
 
 const ColumnTemp = (props) => {
-	const [cards,setCards] = useState([])
+	const [cards,setCards] = useState(window.sessionStorage.getItem('cards') || [])
 	const [show, setShow] = useState(false)
-	
+	const getCards = async () => {
+		const res = await fetch(server+`/card/column/${props.columnSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
+		const rawCards = await res.json()
+		setCards(rawCards.map(card => <Cardbody key={card.cardSeq} card={card} />))
+	}
 	useEffect(() => {
-		const getCards = async () => {
-			const res = await fetch(server+`/card/column/${props.columnSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
-			const rawCards = await res.json()
-			setCards(rawCards.map(card => <Cardbody key={card.cardSeq} card={card} />))
-		}
 		getCards()
+		window.sessionStorage.setItem('cards',cards)
 	},[])
 	
 	const handleShow = () => setShow(true)
 	const handleClose = () => setShow(false)
 	const createCard = async (e,body) => {
+		e.preventDefault()
 		await fetch(server+`/card/column/${props.columnSeq}`, {
 			method: 'post',
 			headers:{'Content-Type':'application/json', Authorization},
@@ -29,7 +30,7 @@ const ColumnTemp = (props) => {
 	}
 	
 	return (
-		<div>
+		<div style={{textAlign:'center'}}>
 			<Button onClick={handleShow}>카드 추가하기</Button>
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header>
