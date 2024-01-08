@@ -22,6 +22,7 @@ const Cardbody = (props) => {
 	const [comments,setComments] = useState([])
 	const [comment,setComment] = useState('')
 	const [charges,setCharges] = useState([])
+	const [charge,setCharge] = useState(0)
 	
 	const updateCard = async (e,body) => {
 		e.preventDefault()
@@ -56,8 +57,37 @@ const Cardbody = (props) => {
 		setComments(comments_)
 	}
 	
+	const getCharges = async () => {
+		const res = await fetch(server+`/card/${cardSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
+		const charges_ = await res.json()
+		console.log(charges_.map(charge => charge.userSeq))
+		setCharges(charges_.map(charge => charge.userSeq))
+	}
+	
+	const createCharge = async e => {
+		e.preventDefault()
+		if(isNaN(charge) || charge<0 || !Number.isInteger(charge)) return alert('알맞은 값이 아닙니다.')
+		if(charges.indexOf(charge)>-1) return alert('이미 작업자 목록에 포함되어 있습니다.')
+		const res = await fetch(server+`/card/${cardSeq}/${charge}`, {
+			method:'post', 
+			headers:{'Content-Type':'application/json', Authorization}})
+		if(res.status!==201) return alert('알맞은 값이 아닙니다.')
+		setCharges([...charges, charge])
+	}
+	
+	const deleteCharge = async e => {
+		e.preventDefault()
+		if(isNaN(charge) || charge<0 || !Number.isInteger(charge)) return alert('알맞은 값이 아닙니다.')
+		if(charges.indexOf(charge)==-1) return alert('작업자 목록에 포함되어 있지 않습니다.')
+		const res = await fetch(server+`/card/${cardSeq}/${charge}`, {
+			method:'delete', 
+			headers:{'Content-Type':'application/json', Authorization}})
+		setCharges(charges.filter(c => c!==charge))
+	}
+	
 	useEffect(() => {
 		getComments()
+		getCharges()
 	},[comments.length])
 	
 	return ( 
@@ -97,6 +127,14 @@ const Cardbody = (props) => {
                     <Modal.Title>작업자 목록</Modal.Title>
                 </Modal.Header>
 				<Modal.Body>
+					<Form onSubmit={createCharge}>
+						<Form.Group>
+							<Form.Control required type='number' onChange={e => setCharge(+e.target.value)} />
+						</Form.Group>
+						<Button type='submit' className='me-2'>작업자 추가</Button>
+						<Button onClick={deleteCharge}>작업자 제외</Button>
+					</Form>
+					{charges.map(charge => <p>{charge}</p>)}
 				</Modal.Body>
 				<Modal.Footer>
 					<Button onClick={handleCloseCharge}>닫기</Button>
@@ -108,7 +146,7 @@ const Cardbody = (props) => {
                     <Modal.Title>댓글</Modal.Title>
                 </Modal.Header>
 				<Modal.Body>
-					<Form onSubmit={createComment}>
+					<Form onSubmit={createCharge}>
 						<Form.Group>
 							<Form.Control required onChange={e => setComment(e.target.value)} />
 						</Form.Group>
