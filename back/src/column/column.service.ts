@@ -1,69 +1,68 @@
-import { User } from './../user/entities/user.entity';
-import { Repository } from 'typeorm';
 import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BordColumn, Bord } from './entities/column.entity';
+import { BoardColumn } from './entities/column.entity';
 import { MoveColumnDto, PostColumnDto } from './dto/column.dto';
-
+import { Board } from 'src/board/entities/board.entity';
+import { User } from './../user/entities/user.entity';
+import { Repository } from 'typeorm';
 @Injectable()
-export class BordColumnService {
+export class BoardColumnService {
   constructor(
-    @InjectRepository(BordColumn)
-    private bordcolumnRepository: Repository<BordColumn>,
-    @InjectRepository(Bord)
-    private bordRepository: Repository<Bord>,
+    @InjectRepository(BoardColumn)
+    private boardcolumnRepository: Repository<BoardColumn>,
+    @InjectRepository(Board)
+    private boardRepository: Repository<Board>,
   ) {}
-
-  async getcolumn(bordId: number) {
-    const columns = await this.bordcolumnRepository.find({
-      where: { bord_id: bordId },
+  async getcolumn(boardid: number) {
+    const columns = await this.boardcolumnRepository.find({
+      where: { board_id: boardid },
     });
     return columns;
   }
 
   async postcolumn(
-    bordid: number,
+    boardid: number,
     userId: number,
     postColumnDto: PostColumnDto,
   ) {
-    const maxOrderColumn = await this.bordcolumnRepository.findOne({
-      where: { bord_id: bordid },
+    const maxOrderColumn = await this.boardcolumnRepository.findOne({
+      where: { board_id: boardid },
       order: { order: 'DESC' },
     });
 
     const order = maxOrderColumn ? maxOrderColumn.order + 1 : 1;
 
-    const bordColumn = this.bordcolumnRepository.create({
+    const boardColumn = this.boardcolumnRepository.create({
       name: postColumnDto.name,
       order: order,
-      bord_id: bordid,
+      board_id: boardid,
       user_id: userId,
     });
 
-    await this.bordcolumnRepository.save(bordColumn);
-    return bordColumn;
+    await this.boardcolumnRepository.save(boardColumn);
+    return boardColumn;
   }
 
   async putcolumn(user: User, columnid: number, postColumnDto: PostColumnDto) {
-    const column = await this.bordcolumnRepository.findOne({
+    const column = await this.boardcolumnRepository.findOne({
       where: { id: columnid },
     });
 
     if (!column) {
       throw new NotFoundException(`컬럼이 없습니다.`);
     }
-    const bordid = column.bord_id;
-    const userid = user.id;
+    const boardid = column.board_id;
+    const userid = user.userSeq;
 
-    await this.checkBord(bordid, userid);
+    await this.checkboard(boardid, userid);
 
     column.name = postColumnDto.name;
 
-    await this.bordcolumnRepository.save(column);
+    await this.boardcolumnRepository.save(column);
     return column;
   }
 
@@ -72,7 +71,7 @@ export class BordColumnService {
     columnid: number,
     moveColumnDto: MoveColumnDto,
   ) {
-    const column = await this.bordcolumnRepository.findOne({
+    const column = await this.boardcolumnRepository.findOne({
       where: { id: columnid },
     });
 
@@ -81,85 +80,85 @@ export class BordColumnService {
     }
 
     const currentOrder = column.order;
-    const bordid = column.bord_id;
+    const boardid = column.board_id;
     const newOrder = moveColumnDto.order;
 
-    await this.checkBord(bordid, userid);
+    await this.checkboard(boardid, userid);
 
     await this.moveorder(column, currentOrder, newOrder);
 
     column.order = newOrder;
-    await this.bordcolumnRepository.save(column);
+    await this.boardcolumnRepository.save(column);
   }
 
   async deleteColumn(user: User, columnid: number) {
-    const column = await this.bordcolumnRepository.findOne({
+    const column = await this.boardcolumnRepository.findOne({
       where: { id: columnid },
     });
 
     if (!column) {
       throw new NotFoundException(`컬럼이 없습니다.`);
     }
-    const bordid = column.bord_id;
-    const userid = user.id;
+    const boardid = column.board_id;
+    const userid = user.userSeq;
     const currentOrder = column.order;
 
-    await this.checkBord(bordid, userid);
+    await this.checkboard(boardid, userid);
 
-    await this.bordcolumnRepository
+    await this.boardcolumnRepository
       .createQueryBuilder()
-      .update(BordColumn)
+      .update(BoardColumn)
       .set({ order: () => '"order" - 1' })
-      .where('"order" > :currentOrder AND "bord_id" = :bordId', {
+      .where('"order" > :currentOrder AND "board_id" = :boardId', {
         currentOrder,
-        bordId: bordid,
+        boardId: boardid,
       })
       .execute();
 
-    await this.bordcolumnRepository.delete(columnid);
+    await this.boardcolumnRepository.delete(columnid);
   }
 
-  private async checkBord(bordid: number, userid: number) {
-    const bord = await this.bordRepository.findOne({
-      where: { user_id: userid },
+  private async checkboard(boardid: number, userid: number) {
+    const board = await this.boardRepository.findOne({
+      where: { userId: userid },
     });
 
-    if (!bord || bord.id !== bordid) {
+    if (!board || board.id !== boardid) {
       throw new UnauthorizedException('권한이 없습니다.');
     }
   }
 
   private async moveorder(
-    column: BordColumn,
+    column: BoardColumn,
     currentOrder: number,
     newOrder: number,
   ) {
     if (column.order !== newOrder) {
       if (currentOrder < newOrder) {
-        await this.bordcolumnRepository
+        await this.boardcolumnRepository
           .createQueryBuilder()
-          .update(BordColumn)
+          .update(BoardColumn)
           .set({ order: () => '"order" - 1' })
           .where(
-            '"order" > :currentOrder AND "order" <= :newOrder AND "bord_id" = :bordId',
+            '"order" > :currentOrder AND "order" <= :newOrder AND "board_id" = :boardId',
             {
               currentOrder,
               newOrder,
-              bordId: column.bord_id,
+              boardId: column.board_id,
             },
           )
           .execute();
       } else {
-        await this.bordcolumnRepository
+        await this.boardcolumnRepository
           .createQueryBuilder()
-          .update(BordColumn)
+          .update(BoardColumn)
           .set({ order: () => '"order" + 1' })
           .where(
-            '"order" < :currentOrder AND "order" >= :newOrder AND "bord_id" = :bordId',
+            '"order" < :currentOrder AND "order" >= :newOrder AND "board_id" = :boardId',
             {
               currentOrder,
               newOrder,
-              bordId: column.bord_id,
+              boardId: column.board_id,
             },
           )
           .execute();

@@ -1,20 +1,12 @@
 /* eslint-disable prettier/prettier */
-import {
-  BeforeInsert,
-  BeforeRemove,
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-
-// import { Bord } from '../../bord/entities/bord.entity';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Board } from 'src/board/entities/board.entity';
 import { User } from '../../user/entities/user.entity';
 
 @Entity({
-  name: 'bordcolumn',
+  name: 'boardcolumn',
 })
-export class BordColumn {
+export class BoardColumn {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,42 +16,13 @@ export class BordColumn {
   @Column()
   order: number;
 
-  //   @BeforeInsert()
-  //   async generateOrder() {
-  //     const maxOrder = await BordColumn.findOne(
-  //       { order: { $gt: 0 } },
-  //       { order: 'order', select: ['order'] },
-  //     );
-  //     this.order = maxOrder ? maxOrder.order + 1 : 1;
-  //   }
-
-  //   @BeforeRemove()
-  //   async shiftOrderOnRemove() {
-  //     await BordColumn.createQueryBuilder()
-  //       .update(BordColumn)
-  //       .set({ order: () => '"order" - 1' })
-  //       .where('"order" > :order', { order: this.order })
-  //       .execute();
-  //   }
-
-  @ManyToOne(() => Bord, (bord) => bord.columns, {
+  @ManyToOne(() => Board, (board) => board.columns, {
     onDelete: 'CASCADE',
   })
-  bord: Bord;
+  board: Board;
 
-  @Column({ type: 'bigint', name: 'bord_id' })
-  bord_id: number;
-
-  @ManyToOne(() => User, (user) => user.columns)
-  user: User;
-
-  @Column({ type: 'bigint', name: 'user_id' })
-  user_id: number;
-}
-
-export class Bord {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @Column({ type: 'bigint', name: 'board_id' })
+  board_id: number;
 
   @ManyToOne(() => User, (user) => user.columns)
   user: User;

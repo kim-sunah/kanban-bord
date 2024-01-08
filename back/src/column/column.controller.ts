@@ -1,4 +1,4 @@
-import { BordColumnService } from './column.service';
+import { BoardColumnService } from './column.service';
 import {
   Body,
   Controller,
@@ -10,38 +10,40 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-
-import { UserInfo } from '../utils/userInfo.decorator';
+import { UserInfo } from 'src/utils/userInfo.decorator';
 import { MoveColumnDto, PostColumnDto } from './dto/column.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('column')
-export class BordColumnController {
-  constructor(private readonly bordcolumnService: BordColumnService) {}
+export class BoardColumnController {
+  constructor(private readonly boardcolumnService: BoardColumnService) {}
 
-  @Get(':bordid')
-  async getcolumn(@Param('bordid') bordId: number) {
-    return await this.bordcolumnService.getcolumn(bordId);
+  @Get(':boardid')
+  async getcolumn(@Param('boardid') boardid: number) {
+    return await this.boardcolumnService.getcolumn(boardid);
   }
 
-  @Post(':bordid')
+  @Post(':boardid')
   async postcolumn(
     @UserInfo() user: User,
-    @Param('bordid') bordid: number,
+    @Param('boardid') boardid: number,
     @Body() postColumnDto: PostColumnDto,
   ) {
-    await this.bordcolumnService.postcolumn(bordid, user.id, postColumnDto);
+    await this.boardcolumnService.postcolumn(
+      boardid,
+      user.userSeq,
+      postColumnDto,
+    );
   }
 
-  //관리자 롤이 있으면 관리자가 수정
-  //팀으로 인바이트시 수정밑 삭제
   @Patch('put/:columnid')
   async putcolumn(
-    @UserInfo() user: User
+    @UserInfo() user: User,
     @Param('columnid') columnid: number,
     @Body() postColumnDto: PostColumnDto,
   ) {
-    await this.bordcolumnService.putcolumn(user,columnid, postColumnDto);
+    await this.boardcolumnService.putcolumn(user, columnid, postColumnDto);
   }
 
   @Patch('move/:columnid')
@@ -50,13 +52,15 @@ export class BordColumnController {
     @Param('columnid') columnid: number,
     @Body() moveColumnDto: MoveColumnDto,
   ) {
-    const userid = user.id;
-    await this.bordcolumnService.movecolumn(userid, columnid, moveColumnDto);
+    const userid = user.userSeq;
+    await this.boardcolumnService.movecolumn(userid, columnid, moveColumnDto);
   }
 
-  //롤가드로 같은 팀일때만
-  @Delete(':columnid')
-  async deleteColumn(@UserInfo() user: User,,@Param('columnid') columnid: number) {
-    await this.bordcolumnService.deleteColumn(user,columnid);
+  @Delete('delete/:columnid')
+  async deleteColumn(
+    @UserInfo() user: User,
+    @Param('columnid') columnid: number,
+  ) {
+    await this.boardcolumnService.deleteColumn(user, columnid);
   }
 }
