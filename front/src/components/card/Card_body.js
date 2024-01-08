@@ -33,24 +33,6 @@ const Cardbody = (props) => {
 		window.location.reload()
 	}
 	
-	
-	
-	const up = async e => {
-		e.preventDefault()
-		await fetch(server+`/card/${cardSeq}/up`, {
-			method: 'PATCH',
-			headers:{'Content-Type':'application/json', Authorization}})
-		window.location.reload()
-	}
-	
-	const down = async e => {
-		e.preventDefault()
-		await fetch(server+`/card/${cardSeq}/down`, {
-			method: 'PATCH',
-			headers:{'Content-Type':'application/json', Authorization}})
-		window.location.reload()
-	}
-	
 	const createComment = async e => {
 		e.preventDefault()
 		const res = await fetch(server+`/comment/${cardSeq}`, {
@@ -81,8 +63,8 @@ const Cardbody = (props) => {
 	return ( 
 		<div style={{textAlign:'center'}} className='mt-1'>
 			<Button onClick={handleShow} className='me-1'>{name}</Button>
-			<Button onClick={up} className='me-1'> ↑</Button>
-			<Button onClick={down}>↓</Button>
+			<Button onClick={e => props.up(e,cardSeq)} className='me-1'> ↑</Button>
+			<Button onClick={e => props.down(e,cardSeq)}>↓</Button>
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header>
                     <Modal.Title>{name} ~{deadline.slice(0,10)}</Modal.Title>

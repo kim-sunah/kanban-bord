@@ -20,6 +20,7 @@ const ColumnTemp = (props) => {
 	
 	const handleShow = () => setShow(true)
 	const handleClose = () => setShow(false)
+	
 	const createCard = async (e,body) => {
 		e.preventDefault()
 		const res = await fetch(server+`/card/column/${props.columnSeq}`, {
@@ -40,6 +41,32 @@ const ColumnTemp = (props) => {
 		setCards(cards.filter(card => card.cardSeq!==cardSeq))
 	}
 	
+	const up = async (e,cardSeq) => {
+		e.preventDefault()
+		await fetch(server+`/card/${cardSeq}/up`, {
+			method: 'PATCH',
+			headers:{'Content-Type':'application/json', Authorization}})
+		const ind = cards.findIndex(card => card.cardSeq===cardSeq)
+		if(ind) setCards(cards.map((card,i) => {
+			if(i==ind) return cards[i-1]
+			else if(i==ind-1) return cards[i+1]
+			return card
+		}))
+	}
+	
+	const down = async (e,cardSeq) => {
+		e.preventDefault()
+		await fetch(server+`/card/${cardSeq}/down`, {
+			method: 'PATCH',
+			headers:{'Content-Type':'application/json', Authorization}})
+		const ind = cards.findIndex(card => card.cardSeq===cardSeq)
+		if(ind<cards.length-1) setCards(cards.map((card,i) => {
+			if(i==ind) return cards[i+1]
+			else if(i==ind+1) return cards[i-1]
+			return card
+		}))
+	}
+	
 	return (
 		<div style={{textAlign:'center'}}>
 			<p>{props.name}</p>
@@ -52,7 +79,7 @@ const ColumnTemp = (props) => {
 					<CardForm onSubmit={createCard} handleClose={handleClose} />
 				</Modal.Body>
 			</Modal>
-			{cards.map(card => <Cardbody key={card.cardSeq} card={card} deleteCard={deleteCard} />)}
+			{cards.map(card => <Cardbody key={card.cardSeq} card={card} deleteCard={deleteCard} up={up} down={down} />)}
 		</div>	
 	)
 }
