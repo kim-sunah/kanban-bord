@@ -1,4 +1,17 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateBoardDto } from './create-board.dto';
 
-export class UpdateBoardDto extends PartialType(CreateBoardDto) {}
+import { IsOptional, IsString } from 'class-validator';
+
+export class UpdateBoardDto  {
+    @IsString()
+    @IsOptional()
+    name : string
+
+    @IsString()
+    @IsOptional()
+    color : string;
+
+    @IsString()
+    @IsOptional()
+    description : string
+
+}
