@@ -8,7 +8,7 @@ import { BoardColumn } from './entities/column.entity';
 import { MoveColumnDto, PostColumnDto } from './dto/column.dto';
 import { Board } from 'src/board/entities/board.entity';
 import { User } from './../user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Between, MoreThan, Repository } from 'typeorm';
 @Injectable()
 export class BoardColumnService {
   constructor(
@@ -84,8 +84,7 @@ export class BoardColumnService {
     const newOrder = moveColumnDto.order;
 
     await this.checkboard(boardid, userid);
-
-    await this.moveorder(column, currentOrder, newOrder);
+    await this.moveorder(currentOrder, newOrder, boardid);
 
     column.order = newOrder;
     await this.boardcolumnRepository.save(column);
@@ -102,19 +101,10 @@ export class BoardColumnService {
     const boardid = column.board_id;
     const userid = user.userSeq;
     const currentOrder = column.order;
+    const maxOrder = await this.getMaxOrder(boardid);
 
     await this.checkboard(boardid, userid);
-
-    await this.boardcolumnRepository
-      .createQueryBuilder()
-      .update(BoardColumn)
-      .set({ order: () => '"order" - 1' })
-      .where('"order" > :currentOrder AND "board_id" = :boardId', {
-        currentOrder,
-        boardId: boardid,
-      })
-      .execute();
-
+    await this.deleteorder(currentOrder, maxOrder, boardid);
     await this.boardcolumnRepository.delete(columnid);
   }
 
@@ -128,41 +118,72 @@ export class BoardColumnService {
     }
   }
 
+  private async getMaxOrder(boardid) {
+    const maxOrderColumn = await this.boardcolumnRepository.findOne({
+      where: { board_id: boardid },
+      order: { order: 'DESC' },
+    });
+
+    return maxOrderColumn.order;
+  }
+
   private async moveorder(
-    column: BoardColumn,
     currentOrder: number,
     newOrder: number,
+    boardid: number,
   ) {
-    if (column.order !== newOrder) {
-      if (currentOrder < newOrder) {
-        await this.boardcolumnRepository
-          .createQueryBuilder()
-          .update(BoardColumn)
-          .set({ order: () => '"order" - 1' })
-          .where(
-            '"order" > :currentOrder AND "order" <= :newOrder AND "board_id" = :boardId',
-            {
-              currentOrder,
-              newOrder,
-              boardId: column.board_id,
-            },
-          )
-          .execute();
-      } else {
-        await this.boardcolumnRepository
-          .createQueryBuilder()
-          .update(BoardColumn)
-          .set({ order: () => '"order" + 1' })
-          .where(
-            '"order" < :currentOrder AND "order" >= :newOrder AND "board_id" = :boardId',
-            {
-              currentOrder,
-              newOrder,
-              boardId: column.board_id,
-            },
-          )
-          .execute();
+    try {
+      if (currentOrder > newOrder) {
+        const columnsToIncrease = await this.boardcolumnRepository.find({
+          where: {
+            board_id: boardid,
+            order: Between(newOrder, currentOrder - 1),
+          },
+        });
+
+        for (const col of columnsToIncrease) {
+          col.order += 1;
+          await this.boardcolumnRepository.save(col);
+        }
+      } else if (currentOrder < newOrder) {
+        const columnsToDecrease = await this.boardcolumnRepository.find({
+          where: {
+            board_id: boardid,
+            order: Between(currentOrder + 1, newOrder),
+          },
+        });
+
+        for (const col of columnsToDecrease) {
+          col.order -= 1;
+          await this.boardcolumnRepository.save(col);
+        }
       }
+    } catch (error) {
+      throw new NotFoundException('오류 발생');
+    }
+  }
+
+  private async deleteorder(
+    currentOrder: number,
+    maxOrder: number,
+    boardid: number,
+  ) {
+    try {
+      if (currentOrder < maxOrder) {
+        const columnsToUpdate = await this.boardcolumnRepository.find({
+          where: {
+            board_id: boardid,
+            order: MoreThan(currentOrder),
+          },
+        });
+
+        for (const col of columnsToUpdate) {
+          col.order -= 1;
+          await this.boardcolumnRepository.save(col);
+        }
+      }
+    } catch (error) {
+      throw new NotFoundException('삭제 중 오류 발생');
     }
   }
 }
