@@ -10,7 +10,7 @@ import {server,Authorization} from '../../constant.js'
 const Cardmain = props => {
 	const navigate = useNavigate()
 	const [searchParams] = useSearchParams()
-	const [columns,setColumns] = useState(JSON.parse(window.sessionStorage.getItem('columns')) || [])
+	const [columns,setColumns] = useState([])
 	const getColumns = async () => {
 		const boardId = +searchParams.get('id')
 		if(isNaN(boardId) || !Number.isInteger(boardId) || boardId<1){
@@ -18,19 +18,22 @@ const Cardmain = props => {
 			navigate('/')
 		}
 		const res = await fetch(server+`/column/${boardId}`, {headers:{'Content-Type':'application/json', Authorization}})
-		const columnSeqs = await res.json()
-		columnSeqs.sort((a,b) => a.order-b.order)
-		setColumns(await Promise.all(columnSeqs.map(async columnSeq => <ColumnTemp key={columnSeq.id} columnSeq={columnSeq.id} />)))
+		const columns_ = await res.json()
+		columns_.sort((a,b) => a.order-b.order)
+		setColumns(columns_)
 	}
 
 	useEffect(() => {
 		getColumns()
-		window.sessionStorage.setItem('columns', JSON.stringify(columns))
 	},[])
+	
 	return (
 		<Container>
 			<Row>
-				{columns.map((column,i) => <Col key={i} name={column.name}>{column}</Col>)}
+				{columns.map((column,i) => (
+					<Col key={i}>
+						<ColumnTemp key={column.id} name={column.name} columnSeq={column.id} />
+					</Col>))}
 			</Row>
 		</Container>
 	)

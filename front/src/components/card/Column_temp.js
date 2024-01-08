@@ -6,28 +6,38 @@ import Button from 'react-bootstrap/Button'
 import CardForm from './Card_form'
 
 const ColumnTemp = (props) => {
-	const [cards,setCards] = useState(JSON.parse(window.sessionStorage.getItem('cards')) || [])
+	const [cards,setCards] = useState([])
 	const [show, setShow] = useState(false)
 	const getCards = async () => {
 		const res = await fetch(server+`/card/column/${props.columnSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
-		const rawCards = await res.json()
-		setCards(rawCards.map(card => <Cardbody key={card.cardSeq} card={card} />))
+		const cards_ = await res.json()
+		setCards(cards_)
 	}
 
 	useEffect(() => {
 		getCards()
-		window.sessionStorage.setItem('cards',JSON.stringify(cards))
-	},[])
+	},[cards.length])
 	
 	const handleShow = () => setShow(true)
 	const handleClose = () => setShow(false)
 	const createCard = async (e,body) => {
 		e.preventDefault()
-		await fetch(server+`/card/column/${props.columnSeq}`, {
+		const res = await fetch(server+`/card/column/${props.columnSeq}`, {
 			method: 'post',
 			headers:{'Content-Type':'application/json', Authorization},
 			body: JSON.stringify(body)})
+		const newCard = await res.json()
+		setCards([...cards, newCard])
+		alert('카드를 생성했습니다.')
 		handleClose()
+	}
+	
+	const deleteCard = async (e,cardSeq) => {
+		e.preventDefault()
+		await fetch(server+`/card/${cardSeq}`, {
+			method: 'delete',
+			headers:{'Content-Type':'application/json', Authorization}})
+		setCards(cards.filter(card => card.cardSeq!==cardSeq))
 	}
 	
 	return (
@@ -42,7 +52,7 @@ const ColumnTemp = (props) => {
 					<CardForm onSubmit={createCard} handleClose={handleClose} />
 				</Modal.Body>
 			</Modal>
-			{cards}
+			{cards.map(card => <Cardbody key={card.cardSeq} card={card} deleteCard={deleteCard} />)}
 		</div>	
 	)
 }
