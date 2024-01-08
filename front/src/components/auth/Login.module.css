@@ -1,0 +1,23 @@
+.signin{
+   
+    text-align: center;
+    display: flex;
+}
+.Login{
+    display:  block;
+    margin: 0px auto;
+  
+    justify-content: center;
+
+}
+.Google{
+    display: flex;
+    margin-right: 20%;
+   
+    justify-content: center;
+    
+}
+.error{
+    text-align: center;
+    color: red;
+}
