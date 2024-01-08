@@ -20,7 +20,7 @@ const CardForm = props => {
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>설명</Form.Label>
-				<Form.Control onChange={e => setDescription(e.target.value)} defaultValue={props.description || ''} />
+				<Form.Control as="textarea" onChange={e => setDescription(e.target.value)} defaultValue={props.description || ''} />
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>기한</Form.Label>

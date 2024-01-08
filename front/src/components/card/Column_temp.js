@@ -6,16 +6,17 @@ import Button from 'react-bootstrap/Button'
 import CardForm from './Card_form'
 
 const ColumnTemp = (props) => {
-	const [cards,setCards] = useState(window.sessionStorage.getItem('cards') || [])
+	const [cards,setCards] = useState(JSON.parse(window.sessionStorage.getItem('cards')) || [])
 	const [show, setShow] = useState(false)
 	const getCards = async () => {
 		const res = await fetch(server+`/card/column/${props.columnSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
 		const rawCards = await res.json()
 		setCards(rawCards.map(card => <Cardbody key={card.cardSeq} card={card} />))
 	}
+
 	useEffect(() => {
 		getCards()
-		window.sessionStorage.setItem('cards',cards)
+		window.sessionStorage.setItem('cards',JSON.stringify(cards))
 	},[])
 	
 	const handleShow = () => setShow(true)
@@ -31,6 +32,7 @@ const ColumnTemp = (props) => {
 	
 	return (
 		<div style={{textAlign:'center'}}>
+			<p>{props.name}</p>
 			<Button onClick={handleShow}>카드 추가하기</Button>
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header>

@@ -13,14 +13,14 @@ const Cardbody = (props) => {
 	const handleShowUpdate = () => setShowUpdate(true)
 	const handleCloseUpdate = () => setShowUpdate(false)
 	
-	// 왜 안될까...
 	const updateCard = async (e,body) => {
 		e.preventDefault()
 		await fetch(server+`/card/${cardSeq}`, {
-			method: 'patch',
+			method: 'PATCH',
 			headers:{'Content-Type':'application/json', Authorization},
 			body: JSON.stringify(body)})
 		handleClose()
+		window.location.reload()
 	}
 	
 	const deleteCard = async (e,body) => {
@@ -29,11 +29,30 @@ const Cardbody = (props) => {
 			method: 'delete',
 			headers:{'Content-Type':'application/json', Authorization}})
 		handleClose()
+		window.location.reload()
+	}
+	
+	const up = async e => {
+		e.preventDefault()
+		await fetch(server+`/card/${cardSeq}/up`, {
+			method: 'PATCH',
+			headers:{'Content-Type':'application/json', Authorization}})
+		window.location.reload()
+	}
+	
+	const down = async e => {
+		e.preventDefault()
+		await fetch(server+`/card/${cardSeq}/down`, {
+			method: 'PATCH',
+			headers:{'Content-Type':'application/json', Authorization}})
+		window.location.reload()
 	}
 	
 	return ( 
-		<div style={{textAlign:'center'}}>
-			<Button onClick={handleShow} className='mt-1'>{name}</Button>
+		<div style={{textAlign:'center'}} className='mt-1'>
+			<Button onClick={handleShow} className='me-1'>{name}</Button>
+			<Button onClick={up} className='me-1'> ↑</Button>
+			<Button onClick={down}>↓</Button>
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header>
                     <Modal.Title>{name}</Modal.Title>
