@@ -13,6 +13,7 @@ import { CardModule } from './card/card.module';
 import { CommentModule } from './comment/comment.module';
 import { Board } from './board/entities/board.entity';
 import { Boarduser } from './board/entities/boadr_user.entity';
+import { BoardColumnModule } from './column/column.module';
 
 const typeOrmModuleOptions = {
   useFactory: async (
@@ -51,6 +52,7 @@ const typeOrmModuleOptions = {
     BoardModule,
     CardModule,
     CommentModule,
+    BoardColumnModule,
   ],
   controllers: [],
   providers: [],

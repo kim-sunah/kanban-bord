@@ -1,6 +1,7 @@
 import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { InCharge } from '../../card/entities/in-charge.entity';
 import { Comment } from '../../comment/entities/comment.entity';
+import { BoardColumn } from 'src/column/entities/column.entity';
 
 @Entity({
   name: 'user',
@@ -23,4 +24,7 @@ export class User {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @OneToMany(() => BoardColumn, (column) => column.board)
+  columns: BoardColumn[];
 }
