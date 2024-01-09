@@ -86,6 +86,7 @@ const Boardsidebar = () => {
                     <span className={classes.text}  >your boards</span>
                     <AiOutlinePlus size="30" onClick={createshow} />
                 </li>
+                {create && <Createboard click={createshow}></Createboard>}
                 <div>
                     {title && title.map(title => (
                         <li  key={title.id}>
@@ -98,7 +99,7 @@ const Boardsidebar = () => {
                 </div>
 
             </ul>
-            {create && <Createboard click={createshow}></Createboard>}
+            
 
 
             <Modal show={show} onHide={handleClose}>
