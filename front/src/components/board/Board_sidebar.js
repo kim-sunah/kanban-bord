@@ -13,6 +13,7 @@ import { Link } from "react-router-dom"
 import { useParams } from "react-router-dom";
 import { BsPersonCheckFill } from "react-icons/bs";
 import { BsPersonFillX } from "react-icons/bs";
+import { BsTrash } from "react-icons/bs";
 const Boardsidebar = () => {
     const inputref = useRef()
     const [show, setShow] = useState(false);
@@ -33,12 +34,18 @@ const Boardsidebar = () => {
         event.preventDefault()
         console.log(inputref.current.value)
         console.log(id)
-        fetch(`http://localhost:5000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }, body: JSON.stringify({ email: inputref.current.value }) })
-            .then(res => res.json()).then(resData => {setinvite(resData); console.log(resData)}).catch(err => console.log(err))
+        fetch(`http://54.180.109.210/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }, body: JSON.stringify({ email: inputref.current.value }) })
+            .then(res => res.json()).then(resData => { setinvite(resData); console.log(resData) }).catch(err => console.log(err))
+    }
+
+    const deletehandler = (deleteid) => {
+        fetch(`http://localhost:5000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }})
+        .then(res => res.json()).then(resData => {console.log(resData)}).catch(err => console.log(err))
+      
     }
 
     useEffect(() => {
-        fetch("http://localhost:5000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" } })
+        fetch("http://54.180.109.210/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" } })
             .then(res => res.json())
             .then(resData => {
                 if (resData.statusCode === 200) {
@@ -81,11 +88,11 @@ const Boardsidebar = () => {
                 </li>
                 <div>
                     {title && title.map(title => (
-                        <li key={title.id}>
-                            <Link to={`${title.id}/${title.name}`} classname={classes.Link} style={{ textDecoration: 'none', color: "white" }} >
-                                {title.name}
-
+                        <li  key={title.id}>
+                            <Link to={`${title.id}/${title.name}`} className={classes.Link} style={{ textDecoration: 'none', color: "white" , marginRight : "50%"}} >
+                                {title.name} 
                             </Link>
+                            <BsTrash onClick={()=> deletehandler(title.id)} style={{cursor:"pointer"}}/>
                         </li>
                     ))}
                 </div>
@@ -103,8 +110,8 @@ const Boardsidebar = () => {
                         <Form.Control placeholder="Email address or name" aria-label="Dollar amount (with dot and two decimal places)" ref={inputref} />
                     </InputGroup>
                 </form>
-                {invite && invite.statusCode === 200 && <h3 style={{textAlign:"center"}}> <BsPersonCheckFill></BsPersonCheckFill>초대하는데 성공했습니다 </h3>}
-                {invite && invite.statusCode !== 200 && <h3 style={{textAlign:"center"}}> <BsPersonFillX> </BsPersonFillX>{invite.message}</h3>}
+                {invite && invite.statusCode === 200 && <h3 style={{ textAlign: "center" }}> <BsPersonCheckFill></BsPersonCheckFill>초대하는데 성공했습니다 </h3>}
+                {invite && invite.statusCode !== 200 && <h3 style={{ textAlign: "center" }}> <BsPersonFillX> </BsPersonFillX>{invite.message}</h3>}
             </Modal>
         </div>
 

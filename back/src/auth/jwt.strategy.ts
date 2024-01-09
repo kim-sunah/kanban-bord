@@ -25,6 +25,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new NotFoundException('해당하는 사용자를 찾을 수 없습니다.');
     }
 
-    return user;
+    return user; //request.user
   }
 }

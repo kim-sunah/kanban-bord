@@ -17,7 +17,7 @@ export class CommentService {
   // 댓글 쓰기
   async createComment(body: string, userSeq: number, cardSeq: number) {
     try {
-      await this.commentRepository.insert({ cardSeq, userSeq, body });
+      return await this.commentRepository.save({ cardSeq, userSeq, body });
     } catch (e) {
       if (e instanceof QueryFailedError)
         throw new NotFoundException('해당 카드가 존재하지 않습니다.');

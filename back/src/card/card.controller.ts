@@ -22,8 +22,7 @@ export class CardController {
   // 카드 만들기
   @Post('column/:id')
   async createCard(@Body() cardDto: CardDto, @Param() params: Id) {
-    await this.cardService.createCard(cardDto, params.id);
-    return { message: '카드가 등록되었습니다.' };
+    return await this.cardService.createCard(cardDto, params.id);
   }
 
   // 특정 컬럼의 카드 목록 보기
@@ -71,6 +70,12 @@ export class CardController {
   @Post(':id/:userSeq')
   async createCharge(@Param() params: Id) {
 	await this.cardService.createCharge(params.id, params.userSeq);
+  }
+  
+  // 카드 작업자 목록 보기
+  @Get(':id')
+  async getChargesByCard(@Param() params: Id) {
+	return await this.cardService.getChargesByCard(params.id);
   }
   
   // 작업자 삭제
