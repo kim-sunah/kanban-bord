@@ -1,3 +1,3 @@
 const server = 'http://localhost:3000'
-const Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNAYy5jb20iLCJzdWIiOjMsImlhdCI6MTcwNDY4NTkzOH0.kvKXBPmJWWLulc_uRmeZoEji1s7IuBaf3iU64Jk-cps'
+const Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJAYi5jb20iLCJzdWIiOjIsImlhdCI6MTcwNDcwNTMxOH0.pqUaxgi7n65XkSJsZpsXo5ADRI_0S0lvhJBgZL01ZCA'
 export {server,Authorization}

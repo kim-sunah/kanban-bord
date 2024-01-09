@@ -26,12 +26,11 @@ export class CommentController {
     @Param() params: Id,
     @Req() req,
   ) {
-    await this.commentService.createComment(
+    return await this.commentService.createComment(
       commentDto.body,
       req.user.userSeq,
       params.id,
     );
-    return { message: '댓글이 등록되었습니다.' };
   }
 
   // 특정 카드의 댓글 목록 보기
