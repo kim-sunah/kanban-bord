@@ -1,6 +1,6 @@
 import ColumnTemp from './Column_temp'
 import React, {useState,useEffect} from 'react'
-import Cookies from 'js-cookie'
+
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
