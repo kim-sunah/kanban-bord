@@ -34,8 +34,8 @@ const Boardsidebar = () => {
         event.preventDefault()
         console.log(inputref.current.value)
         console.log(id)
-        fetch(`http://localhost:5000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }, body: JSON.stringify({ email: inputref.current.value }) })
-            .then(res => res.json()).then(resData => {setinvite(resData); console.log(resData)}).catch(err => console.log(err))
+        fetch(`http://54.180.109.210/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }, body: JSON.stringify({ email: inputref.current.value }) })
+            .then(res => res.json()).then(resData => { setinvite(resData); console.log(resData) }).catch(err => console.log(err))
     }
 
     const deletehandler = (deleteid) => {
@@ -45,7 +45,7 @@ const Boardsidebar = () => {
     }
 
     useEffect(() => {
-        fetch("http://localhost:5000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" } })
+        fetch("http://54.180.109.210/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" } })
             .then(res => res.json())
             .then(resData => {
                 if (resData.statusCode === 200) {
@@ -110,8 +110,8 @@ const Boardsidebar = () => {
                         <Form.Control placeholder="Email address or name" aria-label="Dollar amount (with dot and two decimal places)" ref={inputref} />
                     </InputGroup>
                 </form>
-                {invite && invite.statusCode === 200 && <h3 style={{textAlign:"center"}}> <BsPersonCheckFill></BsPersonCheckFill>초대하는데 성공했습니다 </h3>}
-                {invite && invite.statusCode !== 200 && <h3 style={{textAlign:"center"}}> <BsPersonFillX> </BsPersonFillX>{invite.message}</h3>}
+                {invite && invite.statusCode === 200 && <h3 style={{ textAlign: "center" }}> <BsPersonCheckFill></BsPersonCheckFill>초대하는데 성공했습니다 </h3>}
+                {invite && invite.statusCode !== 200 && <h3 style={{ textAlign: "center" }}> <BsPersonFillX> </BsPersonFillX>{invite.message}</h3>}
             </Modal>
         </div>
 
