@@ -7,18 +7,17 @@ import Boardbody from "./Board_body";
 import { Outlet } from "react-router-dom";
 
 const Boardmain = () => {
-  
+
 
 
     return (
         <>
-           <main style={{display:'flex'}}>
-				<Boardsidebar>
-				</Boardsidebar>
-                <Outlet></Outlet>
-           </main>
+            <main style={{ display: 'flex' }}>
+                <Boardsidebar />
+                <Outlet />
+            </main>
         </>
-      
+
 
     )
 }

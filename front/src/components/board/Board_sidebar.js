@@ -49,14 +49,25 @@ const Boardsidebar = () => {
     }
 
     useEffect(() => {
-        fetch("http://54.180.109.210:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
+        fetch("http://54.180.109.210:4000/user", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
             .then(res => res.json())
             .then(resData => {
-                if (resData.statusCode === 200) {
-                    settitle(resData.board)
+                if (resData.userSeq) {
+                    fetch("http://54.180.109.210:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
+                        .then(res => res.json())
+                        .then(resData => {
+                            if (resData.statusCode === 200) {
+                                settitle(resData.board)
+                            }
+                        }).catch(err => console.log(err))
+                } else {
+                    alert('로그인이 필요합니다')
+                    return navigate('/')
                 }
-            }).catch(err => console.log(err))
 
+            }).catch(err => {
+                console.log(err);
+            })
     }, [])
     return (
         <div className={classes.sidebar} style={{ width: "280px", height: "100%" }}>
