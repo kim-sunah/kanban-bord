@@ -34,18 +34,18 @@ const Boardsidebar = () => {
         event.preventDefault()
         console.log(inputref.current.value)
         console.log(id)
-        fetch(`http://54.180.109.210/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }, body: JSON.stringify({ email: inputref.current.value }) })
+        fetch(`http://localhost:4000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }, body: JSON.stringify({ email: inputref.current.value }) })
             .then(res => res.json()).then(resData => { setinvite(resData); console.log(resData) }).catch(err => console.log(err))
     }
 
     const deletehandler = (deleteid) => {
-        fetch(`http://localhost:5000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }})
+        fetch(`http://localhost:5000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZAZi5jb20iLCJzdWIiOjYsImlhdCI6MTcwNDc2MDg0NX0.yaQdwqaOe1Zr9TFHLPocNUedWhYr0Whp8rgdYw253_M" }})
         .then(res => res.json()).then(resData => {console.log(resData)}).catch(err => console.log(err))
       
     }
 
     useEffect(() => {
-        fetch("http://54.180.109.210/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" } })
+        fetch("http://localhost:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZAZi5jb20iLCJzdWIiOjYsImlhdCI6MTcwNDc2MDg0NX0.yaQdwqaOe1Zr9TFHLPocNUedWhYr0Whp8rgdYw253_M" } })
             .then(res => res.json())
             .then(resData => {
                 if (resData.statusCode === 200) {

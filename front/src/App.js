@@ -2,7 +2,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Boardmain from "./components/board/Board_main";
 import Boardbody from "./components/board/Board_body";
-import Cardmain from './components/card/Card_main'
 import SignUp from "./components/signUp/signUp";
 import SignIn from "./components/signIn/signIn";
 import Login from "./components/auth/Login";
@@ -18,8 +17,7 @@ const router = createBrowserRouter([
       { index: true, element: <SignIn></SignIn> },
       { path: "Signup", element: <SignUp></SignUp> }
     ]
-  },
-  {path : "/card", search: "?id=id" ,element : <Cardmain />}
+  }
 ])
 
 function App() {

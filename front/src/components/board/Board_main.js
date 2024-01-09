@@ -12,9 +12,9 @@ const Boardmain = () => {
 
     return (
         <>
-            <Boardsidebar></Boardsidebar>
-          
-           <main>
+           <main style={{display:'flex'}}>
+				<Boardsidebar>
+				</Boardsidebar>
                 <Outlet></Outlet>
            </main>
         </>
