@@ -7,13 +7,15 @@ import { UserInfo } from 'src/utils/userInfo.decorator';
 import { User } from 'src/user/entities/user.entity';
 
 @Controller('board')
+
 @UseGuards(AuthGuard("jwt"))
+
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
   @Post()
   create(@Body() createBoardDto: CreateBoardDto, @UserInfo() user : User) {
-    return this.boardService.create(createBoardDto,user);
+    return this.boardService.create(createBoardDto,user)
   }
   @Get()
   async find(@UserInfo() user : User){
@@ -22,7 +24,6 @@ export class BoardController {
 
   @Post(':boardId/invite')
   inviteUser(@Param('boardId') boardId: string,@Body('email') email : string) {
-
     return this.boardService.inviteUser(+boardId, email);
   }
 
