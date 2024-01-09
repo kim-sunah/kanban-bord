@@ -8,28 +8,77 @@ import CardForm from './Card_form'
 const ColumnTemp = (props) => {
 	const [cards,setCards] = useState([])
 	const [show, setShow] = useState(false)
-	
+	const getCards = async () => {
+		const res = await fetch(server+`/card/column/${props.columnSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
+		const cards_ = await res.json()
+		setCards(cards_)
+	}
+
 	useEffect(() => {
-		const getCards = async () => {
-			const res = await fetch(server+`/card/column/${props.columnSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
-			const rawCards = await res.json()
-			setCards(rawCards.map(card => <Cardbody key={card.cardSeq} card={card} />))
-		}
 		getCards()
-	},[])
+	},[cards.length])
 	
 	const handleShow = () => setShow(true)
 	const handleClose = () => setShow(false)
+	
+	
+	// 카드 생성
 	const createCard = async (e,body) => {
-		await fetch(server+`/card/column/${props.columnSeq}`, {
+		e.preventDefault()
+		const res = await fetch(server+`/card/column/${props.columnSeq}`, {
 			method: 'post',
 			headers:{'Content-Type':'application/json', Authorization},
 			body: JSON.stringify(body)})
+		const newCard = await res.json()
+		setCards([...cards, newCard])
+		alert('카드를 생성했습니다.')
 		handleClose()
 	}
 	
+	// 카드 삭제
+	const deleteCard = async (e,cardSeq) => {
+		e.preventDefault()
+		await fetch(server+`/card/${cardSeq}`, {
+			method: 'delete',
+			headers:{'Content-Type':'application/json', Authorization}})
+		setCards(cards.filter(card => card.cardSeq!==cardSeq))
+	}
+	
+	// 카드 위로 한 칸 이동
+	const up = async (e,cardSeq) => {
+		e.preventDefault()
+		await fetch(server+`/card/${cardSeq}/up`, {
+			method: 'PATCH',
+			headers:{'Content-Type':'application/json', Authorization}})
+		const ind = cards.findIndex(card => card.cardSeq===cardSeq)
+		if(ind) setCards(cards.map((card,i) => {
+			if(i===ind) return cards[i-1]
+			else if(i===ind-1) return cards[i+1]
+			return card
+		}))
+	}
+	
+	// 카드 아래로 한 칸 이동
+	const down = async (e,cardSeq) => {
+		e.preventDefault()
+		await fetch(server+`/card/${cardSeq}/down`, {
+			method: 'PATCH',
+			headers:{'Content-Type':'application/json', Authorization}})
+		const ind = cards.findIndex(card => card.cardSeq===cardSeq)
+		if(ind<cards.length-1) setCards(cards.map((card,i) => {
+			if(i===ind) return cards[i+1]
+			else if(i===ind+1) return cards[i-1]
+			return card
+		}))
+	}
+	
+	const handleShowMove = (e,cardSeq) => {
+		props.handleShowMove(e,cardSeq,props.columnSeq)
+	}
+	
 	return (
-		<div>
+		<div style={{textAlign:'center'}}>
+			<p>{props.name}</p>
 			<Button onClick={handleShow}>카드 추가하기</Button>
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header>
@@ -39,8 +88,8 @@ const ColumnTemp = (props) => {
 					<CardForm onSubmit={createCard} handleClose={handleClose} />
 				</Modal.Body>
 			</Modal>
-			{cards}
-		</div>	
+			{cards.map(card => <Cardbody key={card.cardSeq} card={card} deleteCard={deleteCard} up={up} down={down} handleShowMove={handleShowMove} />)}
+		</div>
 	)
 }
 

@@ -40,7 +40,7 @@ export class CardService {
   // 카드 만들기
   async createCard(cardDto: CardDto, columnSeq: number) {
     const position = (await this.maxPosition(columnSeq)) + 1;
-    await this.cardRepository.insert({ ...cardDto, position, columnSeq });
+    return await this.cardRepository.save({ ...cardDto, position, columnSeq });
   }
 
   // 특정 카드 찾기
@@ -135,6 +135,11 @@ export class CardService {
   // 작업자 추가
   async createCharge(cardSeq: number, userSeq: number){
 	await this.inChargeRepository.insert({cardSeq,userSeq})
+  }
+  
+  // 카드 작업자 목록 보기
+  async getChargesByCard(cardSeq: number) {
+	return await this.inChargeRepository.find({where:{cardSeq}})
   }
   
   // 작업자 삭제

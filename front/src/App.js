@@ -19,7 +19,7 @@ const router = createBrowserRouter([
       { path: "Signup", element: <SignUp></SignUp> }
     ]
   },
-  { path: "/card", element: <Cardmain></Cardmain> }
+  {path : "/card", search: "?id=id" ,element : <Cardmain />}
 ])
 
 function App() {

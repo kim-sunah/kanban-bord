@@ -26,7 +26,7 @@ export class CardDto {
 export class UpdateCardDto {
   @IsString({ message: '카드 이름은 문자열이어야 합니다.' })
   @ValidateIf((o, v) => v !== undefined)
-  name: string;
+  name: string | undefined;
 
   @IsString({ message: '카드 설명은 문자열이어야 합니다.' })
   @ValidateIf((o, v) => v !== undefined)
@@ -38,5 +38,5 @@ export class UpdateCardDto {
 
   @IsDateString({}, { message: '데드라인은 시간 형식 문자열이어야 합니다.' })
   @ValidateIf((o, v) => v !== undefined)
-  deadline: string;
+  deadline: string | undefined;
 }
