@@ -27,7 +27,7 @@ const Boardbody = props => {
 		const res = await fetch(server+`/column/${boardId}`, {headers:{'Content-Type':'application/json', Authorization}})
 		if(res.status===401){
 			alert('권한이 없습니다.')
-			navigate('/')
+			return navigate('/')
 		}
 		const columns_ = await res.json()
 		columns_.sort((a,b) => a.order-b.order)

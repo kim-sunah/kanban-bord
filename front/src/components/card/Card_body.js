@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import CardForm from './Card_form'
 
+const colorBall = {red:'🔴',orange:'🟠',yellow:'🟡',green:'🟢',brown:'🟤',blue:'🔵',purple:'🟣',black:'⚫'}
 const Cardbody = (props) => {
 	const {cardSeq,name,color,description,deadline} = props.card
 	const [show, setShow] = useState(false)
@@ -98,7 +99,7 @@ const Cardbody = (props) => {
 			
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header>
-                    <Modal.Title>{name} ~{deadline.slice(0,10)}</Modal.Title>
+                    <Modal.Title>{name}{colorBall[color]} ~{deadline.slice(0,10)}</Modal.Title>
                 </Modal.Header>
 				<Modal.Body>
 					{description}
