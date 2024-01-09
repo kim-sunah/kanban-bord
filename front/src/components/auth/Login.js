@@ -23,17 +23,13 @@ const Login = () => {
 
         event.preventDefault();
 
-        fetch("http://localhost:4000/auth/register", {
+        fetch("http://54.180.109.210:4000/auth/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email: Signemail.current.value, name: Signusername.current.value, password: Signpassword.current.value, passwordCheck: SignConfirmpassword.current.value })
         })
             .then(res => res.json()).then(resData => {
-                if (resData.success === false) {
-                    setsignerror(resData.message)
-                } else if (resData.success === true) {
-                    setJustifyActive("tab1")
-                }
+                setJustifyActive("tab1")
             }).catch(err => {
                 console.log(err);
             })
@@ -41,11 +37,11 @@ const Login = () => {
 
     const loginsubmithandler = (event) => {
         event.preventDefault();
-        fetch("http://localhost:4000/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: loginemail.current.value, password: loginpassword.current.value }) })
+        fetch("http://54.180.109.210:4000/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: loginemail.current.value, password: loginpassword.current.value }) })
             .then(res => res.json())
             .then(resData => {
                 session.setItem("access_token", resData.access_token)
-                navigate("/")
+                navigate("/board")
             }).catch(err => {
                 console.log(err);
             })
@@ -75,10 +71,6 @@ const Login = () => {
             {justifyActive === "tab1" && <form onSubmit={loginsubmithandler}>
 
                 <div className="text-center mb-3">
-
-
-
-
                 </div>
                 {loginerror && <p className={classes.error}>{loginerror}</p>}
                 <MDBInput wrapperClass='mb-4' label='Email address' type='email' ref={loginemail} />

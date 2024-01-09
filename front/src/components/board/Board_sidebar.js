@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import classes from "./Board_main.module.css"
+import { CiUser } from "react-icons/ci";
 import { BsClipboard2 } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -9,11 +10,11 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Modal from 'react-bootstrap/Modal';
 import Createboard from "./Create_board";
-import { Link } from "react-router-dom"
-import { useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom"
 import { BsPersonCheckFill } from "react-icons/bs";
 import { BsPersonFillX } from "react-icons/bs";
 import { BsTrash } from "react-icons/bs";
+import { CiLogout } from "react-icons/ci";
 const Boardsidebar = () => {
     const inputref = useRef()
     const [show, setShow] = useState(false);
@@ -21,7 +22,7 @@ const Boardsidebar = () => {
     const [title, settitle] = useState([])
     const [invite, setinvite] = useState()
     const { id } = useParams()
-
+    const navigate = useNavigate()
 
     const handleClose = () => {
         setShow(false);
@@ -32,20 +33,23 @@ const Boardsidebar = () => {
 
     const submithandler = (event) => {
         event.preventDefault()
-        console.log(inputref.current.value)
-        console.log(id)
-        fetch(`http://localhost:4000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }, body: JSON.stringify({ email: inputref.current.value }) })
+
+        fetch(`http://54.180.109.210:4000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` }, body: JSON.stringify({ email: inputref.current.value }) })
             .then(res => res.json()).then(resData => { setinvite(resData); console.log(resData) }).catch(err => console.log(err))
     }
 
     const deletehandler = (deleteid) => {
-        fetch(`http://localhost:4000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }})
-        .then(res => res.json()).then(resData => {console.log(resData)}).catch(err => console.log(err))
-      
+        fetch(`http://54.180.109.210:4000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
+            .then(res => res.json()).then(resData => { console.log(resData) }).catch(err => console.log(err))
+
+    }
+    const logOut = () => {
+        window.sessionStorage.removeItem("access_token");
+        return navigate('/')
     }
 
     useEffect(() => {
-        fetch("http://localhost:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" } })
+        fetch("http://54.180.109.210:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
             .then(res => res.json())
             .then(resData => {
                 if (resData.statusCode === 200) {
@@ -58,6 +62,11 @@ const Boardsidebar = () => {
         <div className={classes.sidebar} style={{ width: "280px", height: "100%" }}>
             <ul className="nav nav-pills flex-column mb-auto" style={{ color: "white" }}>
                 <li>
+                    <CiUser size="30"></CiUser>
+                    <span className={classes.text}>Log Out</span>
+                    <CiLogout onClick={() => logOut()} style={{ cursor: "pointer" }} />
+                </li>
+                <li className={classes.li}>
                     <BsClipboard2 size="30"></BsClipboard2>
                     <span className={classes.text}>Boards</span>
                 </li>
@@ -89,17 +98,17 @@ const Boardsidebar = () => {
                 {create && <Createboard click={createshow}></Createboard>}
                 <div>
                     {title && title.map(title => (
-                        <li  key={title.id}>
-                            <Link to={`${title.id}/${title.name}`} className={classes.Link} style={{ textDecoration: 'none', color: "white" , marginRight : "50%"}} >
-                                {title.name} 
+                        <li key={title.id}>
+                            <Link to={`${title.id}/${title.name}`} className={classes.Link} style={{ textDecoration: 'none', color: "white", marginRight: "50%" }} >
+                                {title.name}
                             </Link>
-                            <BsTrash onClick={()=> deletehandler(title.id)} style={{cursor:"pointer"}}/>
+                            <BsTrash onClick={() => deletehandler(title.id)} style={{ cursor: "pointer" }} />
                         </li>
                     ))}
                 </div>
 
             </ul>
-            
+
 
 
             <Modal show={show} onHide={handleClose}>

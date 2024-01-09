@@ -7,11 +7,11 @@ import SignIn from "./components/signIn/signIn";
 import Login from "./components/auth/Login";
 const router = createBrowserRouter([
   {
-    path: "/", element: <Boardmain></Boardmain>, children: [
+    path: "/board", element: <Boardmain></Boardmain>, children: [
       { path: ":id/:title", element: <Boardbody></Boardbody> },
     ]
   },
-  { path: "login", element: <Login></Login> },
+  { path: "/", element: <Login></Login> },
   {
     path: "signUp", children: [
       { index: true, element: <SignIn></SignIn> },
