@@ -54,7 +54,7 @@ export class BoardService {
   }
 
   async update(id: number, updateBoardDto: UpdateBoardDto , user : User) {
-    const board = await this.boardRepository.findOne({where : {userId : +user.userSeq }}) //추후 수정 
+    const board = await this.boardRepository.findOne({where : {userId : +user.userSeq , id : id }}) //추후 수정 
     const boarduser = await this. boarduserRepository.findOne({where :{userId : +user.userSeq}})
     if(_.isNil(board)){
       throw new UnauthorizedException("수정할 권한이 없습니다.")
@@ -64,7 +64,7 @@ export class BoardService {
   }
 
   async remove(id: number, user : User) {
-    const board = await this.boardRepository.findOne({where : {userId :  +user.userSeq}}) //추후 수정 
+    const board = await this.boardRepository.findOne({where : {userId :  +user.userSeq , id : id}}) //추후 수정 
     if(_.isNil(board)){
       throw new UnauthorizedException("삭제할 권한이 없습니다.")
     }
