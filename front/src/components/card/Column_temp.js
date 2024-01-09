@@ -1,6 +1,6 @@
 import Cardbody from './Card_body'
 import React, {useState,useEffect} from 'react'
-import {server,Authorization} from '../../constant.js'
+import {server} from '../../constant.js'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import CardForm from './Card_form'
@@ -8,6 +8,8 @@ import CardForm from './Card_form'
 const ColumnTemp = (props) => {
 	const [cards,setCards] = useState([])
 	const [show, setShow] = useState(false)
+	const Authorization = 'Bearer '+window.sessionStorage.getItem("access_token")
+	
 	const getCards = async () => {
 		const res = await fetch(server+`/card/column/${props.columnSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
 		const cards_ = await res.json()

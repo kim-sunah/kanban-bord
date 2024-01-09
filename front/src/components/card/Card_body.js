@@ -1,6 +1,6 @@
 import Modal from 'react-bootstrap/Modal'
 import React, {useState, useEffect} from 'react'
-import {server,Authorization} from '../../constant.js'
+import {server} from '../../constant.js'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import CardForm from './Card_form'
@@ -23,6 +23,7 @@ const Cardbody = (props) => {
 	const [comment,setComment] = useState('')
 	const [charges,setCharges] = useState([])
 	const [charge,setCharge] = useState(0)
+	const Authorization = 'Bearer '+window.sessionStorage.getItem("access_token")
 	
 	const updateCard = async (e,body) => {
 		e.preventDefault()

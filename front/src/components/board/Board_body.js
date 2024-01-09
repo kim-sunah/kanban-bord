@@ -5,13 +5,18 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useParams, useNavigate } from 'react-router-dom'
-import {server,Authorization} from '../../constant.js'
+import {server} from '../../constant.js'
 import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 
 const Boardbody = props => {
 	const navigate = useNavigate()
+	const Authorization = 'Bearer '+window.sessionStorage.getItem("access_token")
+	if(!Authorization){
+		alert('권한이 없습니다.')
+		navigate('/')
+	}
 	const boardId = +useParams().id
 	const [columns,setColumns] = useState([])
 	const getColumns = async () => {
@@ -20,6 +25,10 @@ const Boardbody = props => {
 			navigate('/')
 		}
 		const res = await fetch(server+`/column/${boardId}`, {headers:{'Content-Type':'application/json', Authorization}})
+		if(res.status===401){
+			alert('권한이 없습니다.')
+			//navigate('/')
+		}
 		const columns_ = await res.json()
 		columns_.sort((a,b) => a.order-b.order)
 		setColumns(columns_)
