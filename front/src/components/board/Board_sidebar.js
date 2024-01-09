@@ -39,13 +39,13 @@ const Boardsidebar = () => {
     }
 
     const deletehandler = (deleteid) => {
-        fetch(`http://localhost:5000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZAZi5jb20iLCJzdWIiOjYsImlhdCI6MTcwNDc2MDg0NX0.yaQdwqaOe1Zr9TFHLPocNUedWhYr0Whp8rgdYw253_M" }})
+        fetch(`http://localhost:4000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" }})
         .then(res => res.json()).then(resData => {console.log(resData)}).catch(err => console.log(err))
       
     }
 
     useEffect(() => {
-        fetch("http://localhost:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZAZi5jb20iLCJzdWIiOjYsImlhdCI6MTcwNDc2MDg0NX0.yaQdwqaOe1Zr9TFHLPocNUedWhYr0Whp8rgdYw253_M" } })
+        fetch("http://localhost:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNobHhvZHVkMDRAbmF2ZXIuY29tIiwic3ViIjozLCJpYXQiOjE3MDQ2MjMyMTF9.V-lfby5HCDBl9BBK7rgHwRqDE-nh46HQ8G4RRebfS7Y" } })
             .then(res => res.json())
             .then(resData => {
                 if (resData.statusCode === 200) {
