@@ -1,12 +1,13 @@
 import Modal from 'react-bootstrap/Modal'
 import React, {useState, useEffect} from 'react'
-import {server,Authorization} from '../../constant.js'
+import {server} from '../../constant.js'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import CardForm from './Card_form'
 
+const colorBall = {red:'🔴',orange:'🟠',yellow:'🟡',green:'🟢',brown:'🟤',blue:'🔵',purple:'🟣',black:'⚫'}
 const Cardbody = (props) => {
-	const {cardSeq, name,color,description,deadline} = props.card
+	const {cardSeq,name,color,description,deadline} = props.card
 	const [show, setShow] = useState(false)
 	const handleShow = () => setShow(true)
 	const handleClose = () => setShow(false)
@@ -23,6 +24,7 @@ const Cardbody = (props) => {
 	const [comment,setComment] = useState('')
 	const [charges,setCharges] = useState([])
 	const [charge,setCharge] = useState(0)
+	const Authorization = 'Bearer '+window.sessionStorage.getItem("access_token")
 	
 	const updateCard = async (e,body) => {
 		e.preventDefault()
@@ -60,7 +62,6 @@ const Cardbody = (props) => {
 	const getCharges = async () => {
 		const res = await fetch(server+`/card/${cardSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
 		const charges_ = await res.json()
-		console.log(charges_.map(charge => charge.userSeq))
 		setCharges(charges_.map(charge => charge.userSeq))
 	}
 	
@@ -92,13 +93,13 @@ const Cardbody = (props) => {
 	
 	return ( 
 		<div style={{textAlign:'center'}} className='mt-1'>
-			<Button onClick={handleShow} className='me-1'>{name}</Button>
+			<Button style={{backgroundColor:color}} onClick={handleShow} className='me-1'>{name}</Button>
 			<Button onClick={e => props.up(e,cardSeq)} className='me-1'> ↑</Button>
 			<Button onClick={e => props.down(e,cardSeq)}>↓</Button>
 			
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header>
-                    <Modal.Title>{name} ~{deadline.slice(0,10)}</Modal.Title>
+                    <Modal.Title>{name}{colorBall[color]} ~{deadline.slice(0,10)}</Modal.Title>
                 </Modal.Header>
 				<Modal.Body>
 					{description}

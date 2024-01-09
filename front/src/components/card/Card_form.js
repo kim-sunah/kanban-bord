@@ -2,6 +2,7 @@ import {useState} from 'react'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
+const colors = [['red','빨강🔴'],['orange','오렌지🟠'],['yellow','노랑🟡'],['green','초록🟢'],['brown','갈색🟤'],['blue','파랑🔵'],['purple','보라🟣'],['black','검정⚫']]
 const CardForm = props => {
 	const [name,setName] = useState(props.name||'')
 	const [color,setColor] = useState(props.color||'')
@@ -16,7 +17,9 @@ const CardForm = props => {
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>색깔</Form.Label>
-				<Form.Control onChange={e => setColor(e.target.value)} defaultValue={props.color || ''} />
+				<Form.Select value={color} onChange={e => setColor(e.target.value)} aria-label="Default select example">
+					{colors.map(color => <option value={color[0]}>{color[1]}</option>)}
+				</Form.Select>
 			</Form.Group>
 			<Form.Group>
 				<Form.Label>설명</Form.Label>
