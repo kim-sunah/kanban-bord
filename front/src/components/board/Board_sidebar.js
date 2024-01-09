@@ -34,7 +34,17 @@ const Boardsidebar = () => {
         setinvite("")
     };
     const handleShow = () => setShow(true);
-    const membershows = () => setmembershow(true);
+    const membershows = () => {
+        setmembershow(true)
+        console.log(sessionStorage.getItem("access_token"))
+       
+            fetch(`http://localhost:4000/board/1`,{ method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}`} })
+            .then(res => res.json())
+            .then(resData => console.log(resData))
+            .catch(err => console.log(err))
+
+        
+    };
     const createshow = () => setcreate(!create)
 
     const submithandler = (event) => {
@@ -66,10 +76,6 @@ const Boardsidebar = () => {
                             console.log(resData)
                             if (resData.statusCode === 200) {
                                 settitle(resData.board)
-                                fetch(`http://localhost:4000/board/${id}/invite`,{ method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}`} })
-                                .then(res => res.json())
-                                .then(resData => console.log(resData))
-                                .catch(err => console.log(err))
                             }
                         }).catch(err => console.log(err))
                 } else {
