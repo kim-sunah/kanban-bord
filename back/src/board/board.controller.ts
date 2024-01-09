@@ -21,6 +21,14 @@ export class BoardController {
   async find(@UserInfo() user : User){
     return  await this.boardService.find(user)
   }
+  @Get(":boardId/invite")
+  inviteusersearch(@Param('boardId') boardId: string){
+    console.log(boardId)
+    return this.boardService.inviteusersearch(+boardId)
+
+  }
+
+
 
   @Post(':boardId/invite')
   inviteUser(@Param('boardId') boardId: string,@Body('email') email : string) {

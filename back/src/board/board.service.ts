@@ -21,10 +21,16 @@ export class BoardService {
   }
 
   async find(user : User){
-    
    const board = await this.boardRepository.find({where : {userId : user.userSeq}})
    return {statusCode : 200 , board}
- 
+  }
+
+  async inviteusersearch(id : number){
+    const user= await this.boarduserRepository.find({where : {borderId : id}})
+    if(!user){
+      return {}
+    }
+    return user
 
   }
 

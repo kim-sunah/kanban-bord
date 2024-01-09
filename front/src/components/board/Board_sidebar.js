@@ -18,6 +18,7 @@ import { CiLogout } from "react-icons/ci";
 const Boardsidebar = () => {
     const inputref = useRef()
     const [show, setShow] = useState(false);
+    const [membershow, setmembershow] = useState(false);
     const [create, setcreate] = useState(false);
     const [title, settitle] = useState([])
     const [invite, setinvite] = useState()
@@ -28,7 +29,12 @@ const Boardsidebar = () => {
         setShow(false);
         setinvite("")
     };
+    const memberClose = () => {
+        setmembershow(false);
+        setinvite("")
+    };
     const handleShow = () => setShow(true);
+    const membershows = () => setmembershow(true);
     const createshow = () => setcreate(!create)
 
     const submithandler = (event) => {
@@ -40,7 +46,9 @@ const Boardsidebar = () => {
 
     const deletehandler = (deleteid) => {
         fetch(`http://54.180.109.210:4000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
-            .then(res => res.json()).then(resData => { console.log(resData) }).catch(err => console.log(err))
+            .then(res => res.json()).then(resData => { alert("삭제에 성공했습니다.")  }).catch(err => console.log(err))
+   
+
 
     }
     const logOut = () => {
@@ -55,8 +63,13 @@ const Boardsidebar = () => {
                     fetch("http://54.180.109.210:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
                         .then(res => res.json())
                         .then(resData => {
+                            console.log(resData)
                             if (resData.statusCode === 200) {
                                 settitle(resData.board)
+                                fetch(`http://localhost:4000/board/${id}/invite`,{ method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}`} })
+                                .then(res => res.json())
+                                .then(resData => console.log(resData))
+                                .catch(err => console.log(err))
                             }
                         }).catch(err => console.log(err))
                 } else {
@@ -82,7 +95,7 @@ const Boardsidebar = () => {
                 </li>
                 <li className={classes.li}>
                     <AiOutlineUser size="30" />
-                    <span className={classes.text}>Members</span>
+                    <span className={classes.text} onClick={membershows} style={{cursor :"pointer"}}>Members</span>
                     <AiOutlinePlus size="30" onClick={handleShow} style={{ cursor: "pointer" }} />
                 </li>
                 <li className={classes.li} >
@@ -132,6 +145,14 @@ const Boardsidebar = () => {
                 </form>
                 {invite && invite.statusCode === 200 && <h3 style={{ textAlign: "center" }}> <BsPersonCheckFill></BsPersonCheckFill>초대하는데 성공했습니다 </h3>}
                 {invite && invite.statusCode !== 200 && <h3 style={{ textAlign: "center" }}> <BsPersonFillX> </BsPersonFillX>{invite.message}</h3>}
+            </Modal>
+
+
+            
+            <Modal show={membershow} onHide={memberClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>invite user</Modal.Title>
+                </Modal.Header>
             </Modal>
         </div>
 
