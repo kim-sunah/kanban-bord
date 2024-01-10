@@ -20,13 +20,13 @@ export class UserService {
     private userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
-  async findByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email });
-  }
-  async update(updateDto: UpdateDto, user: User) {
-    await this.userRepository.update(user, { name: updateDto.name });
-  }
-  async delete(user: User) {
-    return await this.userRepository.delete(user);
-  }
+  // async findByEmail(email: string) {
+  //   return await this.userRepository.findOneBy({ email });
+  // }
+  // async update(updateDto: UpdateDto, user: User) {
+  //   await this.userRepository.update(user, { name: updateDto.name });
+  // }
+  // async delete(user: User) {
+  //   return await this.userRepository.delete(user);
+  // }
 }

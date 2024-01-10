@@ -26,23 +26,37 @@ export class BoardService {
   }
 
   async inviteusersearch(id : number){
-    const user= await this.boarduserRepository.find({where : {borderId : id}})
-    if(!user){
+    const boardinvites= await this.boarduserRepository.find({where : {borderId : id}})
+  
+    if(!boardinvites){
       return {}
     }
-    return user
+
+    const result = [];
+
+    for (const boardinvite of boardinvites) {
+      const user = await this.userRepository.findOne({ where: { userSeq: boardinvite.userId }});
+      
+      result.push({
+        email : user.email
+      });
+    }
+    return result
+   
 
   }
 
   async inviteUser(id: number, email : string) {
+   
    const user = await this.userRepository.findOne({where : {email : email}})
+   console.log(user)
   
    if(_.isNil(user)){
       throw new NotFoundException("유저를 찾을수 없습니다.")
    }
-   const boarduser = await this.boarduserRepository.find({where : {userId : user.userSeq}})
+   const boarduser = await this.boarduserRepository.find({where : {userId : user.userSeq , borderId : id }})
    console.log(boarduser)
-   if(boarduser){
+   if(boarduser.length > 0){
     throw new BadRequestException("이미 초대된 유저입니다")
    }
 
