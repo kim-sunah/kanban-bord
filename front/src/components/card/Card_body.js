@@ -100,7 +100,7 @@ const Cardbody = (props) => {
 	},[comments.length])
 	
 	return ( 
-		<div style={{textAlign:'center'}} className='mt-1'>
+		<div style={{textAlign:'center'}} className='mt-1 kanbanCard'>
 			<Button style={{backgroundColor:color}} onClick={handleShow} className='me-1'>{name}</Button>
 			<Button onClick={e => props.up(e,cardSeq)} className='me-1'> ↑</Button>
 			<Button onClick={e => props.down(e,cardSeq)}>↓</Button>
