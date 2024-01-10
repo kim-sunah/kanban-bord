@@ -7,7 +7,12 @@ import CardForm from './Card_form'
 
 const colorBall = {red:'🔴',orange:'🟠',yellow:'🟡',green:'🟢',brown:'🟤',blue:'🔵',purple:'🟣',black:'⚫'}
 const Cardbody = (props) => {
-	const {cardSeq,name,color,description,deadline} = props.card
+	const {card} = props
+	const [cardSeq, setCardSeq] = useState(card.cardSeq)
+	const [name, setName] = useState(card.name)
+	const [color, setColor] = useState(card.color)
+	const [description, setDescription] = useState(card.description)
+	const [deadline, setDeadline] = useState(card.deadline)
 	const [show, setShow] = useState(false)
 	const handleShow = () => setShow(true)
 	const handleClose = () => setShow(false)
@@ -33,7 +38,11 @@ const Cardbody = (props) => {
 			headers:{'Content-Type':'application/json', Authorization},
 			body: JSON.stringify(body)})
 		handleClose()
-		window.location.reload()
+		handleCloseUpdate()
+		setName(body.name)
+		setColor(body.color)
+		setDescription(body.description)
+		setDeadline(body.deadline)
 	}
 	
 	const createComment = async e => {
