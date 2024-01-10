@@ -7,19 +7,17 @@ const Columns = ({ boardid }) => {
   const [newColumnName, setNewColumnName] = useState('')
   const [showModal, setShowModal] = useState(false)
   const [selectedColumn, setSelectedColumn] = useState(null)
+  const Authorization = 'Bearer '+window.sessionStorage.getItem("access_token")
 
   useEffect(() => {
     fetchColumns(boardid)
-  }, [boardid])
+  }, [])
 
   const fetchColumns = async (boardid) => {
-    boardid = 4
-
     const response = await fetch(`http://localhost:4000/column/${boardid}`, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRudGpxNTEzMEBuYXZlci5jb20iLCJzdWIiOjEsImlhdCI6MTcwNDc4MzMxMH0.F6zuugKgT29AKPrEVJWfVfWh2GjZY9PVD8Jy9ZA4iV0',
+        Authorization,
       },
     })
     const columns = await response.json()
@@ -27,15 +25,13 @@ const Columns = ({ boardid }) => {
   }
 
   const addColumn = async () => {
-    boardid = 4
     try {
       console.log(newColumnName)
       const response = await fetch(`http://localhost:4000/column/${boardid}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRudGpxNTEzMEBuYXZlci5jb20iLCJzdWIiOjEsImlhdCI6MTcwNDc4MzMxMH0.F6zuugKgT29AKPrEVJWfVfWh2GjZY9PVD8Jy9ZA4iV0',
+          Authorization,
         },
         body: JSON.stringify({ name: newColumnName }),
       })
@@ -57,8 +53,7 @@ const Columns = ({ boardid }) => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRudGpxNTEzMEBuYXZlci5jb20iLCJzdWIiOjEsImlhdCI6MTcwNDc4MzMxMH0.F6zuugKgT29AKPrEVJWfVfWh2GjZY9PVD8Jy9ZA4iV0',
+          Authorization,
         },
         body: JSON.stringify({ name: newColumnName }),
       })
@@ -78,13 +73,10 @@ const Columns = ({ boardid }) => {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRudGpxNTEzMEBuYXZlci5jb20iLCJzdWIiOjEsImlhdCI6MTcwNDc4MzMxMH0.F6zuugKgT29AKPrEVJWfVfWh2GjZY9PVD8Jy9ZA4iV0',
+          Authorization,
         },
         body: JSON.stringify({ order: targetOrder }),
       })
-
-      await fetchColumns()
     } catch (error) {
       console.error('Error moving column:', error.message)
     }
@@ -98,16 +90,15 @@ const Columns = ({ boardid }) => {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            Authorization:
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRudGpxNTEzMEBuYXZlci5jb20iLCJzdWIiOjEsImlhdCI6MTcwNDc4MDgwOH0.BIHs1na9l7aGNASlca7kTSylCBU38-TzlfoL2zfNBlk',
+            Authorization,
           },
           body: JSON.stringify(),
         })
+		setColumns(columns.filter(column => column.id!==columnId))
       } else {
         alert('Delete cancelled')
         return
       }
-      await fetchColumns()
     } catch (error) {
       console.error('Error deleting column:', error.message)
     }
@@ -122,8 +113,9 @@ const Columns = ({ boardid }) => {
   const closeModal = () => {
     setShowModal(false)
   }
-  const handleColumnClick = (column) => {
-    openModal(column)
+  const handleColumnClick = (e,column) => {
+	  console.log(e.target.tagName)
+	  if(e.target.tagName!=='BUTTON') openModal(column)
   }
 
   const handleDragStart = (e, column) => {
@@ -196,7 +188,7 @@ const Columns = ({ boardid }) => {
             id={column.id}
             name={column.name}
             key={column.id}
-            onClick={() => handleColumnClick(column)}
+            onClick={e => handleColumnClick(e,column)}
             draggable={true}
             onDragStart={(e) => handleDragStart(e, column)}
             onDragOver={handleDragOver}
