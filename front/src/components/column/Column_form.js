@@ -1,17 +1,24 @@
-import Cardbody from './Card_body'
+import Cardbody from '../card/Card_body'
 import React, {useState,useEffect} from 'react'
 import {server} from '../../constant.js'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
-import CardForm from './Card_form'
+import CardForm from '../card/Card_form'
+import Card from 'react-bootstrap/Card'
 
-const ColumnTemp = (props) => {
+function ColumnForm(props) {
+  const cardStyle = {
+    width: '300px',
+    margin: '0 50px 0 20px',
+	flex: '0 0 300px'
+  }
+	const { id:columnSeq, name, onClick, onDragStart, onDragOver, onDrop } = props
 	const [cards,setCards] = useState([])
 	const [show, setShow] = useState(false)
 	const Authorization = 'Bearer '+window.sessionStorage.getItem("access_token")
 	
 	const getCards = async () => {
-		const res = await fetch(server+`/card/column/${props.columnSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
+		const res = await fetch(server+`/card/column/${columnSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
 		const cards_ = await res.json()
 		setCards(cards_)
 	}
@@ -27,7 +34,7 @@ const ColumnTemp = (props) => {
 	// 카드 생성
 	const createCard = async (e,body) => {
 		e.preventDefault()
-		const res = await fetch(server+`/card/column/${props.columnSeq}`, {
+		const res = await fetch(server+`/card/column/${columnSeq}`, {
 			method: 'post',
 			headers:{'Content-Type':'application/json', Authorization},
 			body: JSON.stringify(body)})
@@ -77,22 +84,33 @@ const ColumnTemp = (props) => {
 	const handleShowMove = (e,cardSeq) => {
 		props.handleShowMove(e,cardSeq,props.columnSeq)
 	}
-	
-	return (
-		<div style={{textAlign:'center'}}>
-			<p>{props.name}</p>
-			<Button onClick={handleShow}>카드 추가하기</Button>
-			<Modal show={show} onHide={handleClose}>
-				<Modal.Header>
-                    <Modal.Title>새 카드 만들기</Modal.Title>
-                </Modal.Header>
-				<Modal.Body>
-					<CardForm onSubmit={createCard} handleClose={handleClose} />
-				</Modal.Body>
-			</Modal>
-			{cards.map(card => <Cardbody key={card.cardSeq} card={card} deleteCard={deleteCard} up={up} down={down} handleShowMove={handleShowMove} />)}
-		</div>
-	)
+
+  return (
+    <Card
+      onClick={onClick}
+      draggable={true}
+      onDragStart={(e) => onDragStart(e, columnSeq)}
+      onDragOver={(e) => onDragOver(e)}
+      onDrop={(e) => onDrop(e, columnSeq)}
+      style={cardStyle}
+    >
+      <Card.Header className='name'> {props.name} </Card.Header>{' '}
+      <Card.Body>
+        {cards.map(card => <Cardbody key={card.cardSeq} card={card} deleteCard={deleteCard} up={up} down={down} handleShowMove={handleShowMove} />)}
+      </Card.Body>{' '}
+      <Card.Footer className='date'>
+		<Button onClick={handleShow} variant='primary'> 카드추가 </Button>{' '}
+	  </Card.Footer>{' '}
+	  <Modal show={show} onHide={handleClose}>
+		<Modal.Header>
+			<Modal.Title>새 카드 만들기</Modal.Title>
+		</Modal.Header>
+		<Modal.Body>
+			<CardForm onSubmit={createCard} handleClose={handleClose} />
+		</Modal.Body>
+	</Modal>
+    </Card>
+  )
 }
 
-export default ColumnTemp
+export default ColumnForm

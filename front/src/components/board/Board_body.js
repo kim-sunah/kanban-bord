@@ -1,4 +1,3 @@
-import ColumnTemp from '../card/Column_temp'
 import React, {useState,useEffect} from 'react'
 
 import Container from 'react-bootstrap/Container';
@@ -9,6 +8,7 @@ import {server} from '../../constant.js'
 import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
+import Columns from '../column/column-edit'
 
 const Boardbody = props => {
 	const navigate = useNavigate()
@@ -60,12 +60,7 @@ const Boardbody = props => {
 	
 	return (
 		<Container>
-			<Row>
-				{columns.map((column,i) => (
-					<Col key={i}>
-						<ColumnTemp key={column.id} name={column.name} columnSeq={column.id} handleShowMove={handleShowMove} />
-					</Col>))}
-			</Row>
+			<Columns boardid={boardId} />
 			<Modal show={showMove} onHide={handleCloseMove}>
 				<Modal.Header>
 					<Modal.Title>이동할 컬럼</Modal.Title>
@@ -74,7 +69,7 @@ const Boardbody = props => {
 					<Form.Select value={newColumnSeq} onChange={e => {
 						setNewColumnSeq(e.target.value)
 					}} aria-label="Default select example">
-						{columns.map(column => <option value={column.id}>{column.name}</option>)}
+						{columns.map(column => <option value={column.id} key={column.id}>{column.name}</option>)}
 					</Form.Select>
 					<br />
 					<Button onClick={move} className='me-2'>이동</Button>
