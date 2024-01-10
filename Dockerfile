@@ -1,5 +1,6 @@
-FROM node:16
-WORKDIR /kanban-bord/back
+FROM node
+WORKDIR /app
+ADD . /app
 RUN npm install
-EXPOSE 4000
-CMD npm run start
+EXPOSE 3000
+CMD npm start
