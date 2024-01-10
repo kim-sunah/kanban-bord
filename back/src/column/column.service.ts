@@ -20,9 +20,6 @@ export class BoardColumnService {
   async getcolumn(boardid: number) {
     const columns = await this.boardcolumnRepository.find({
       where: { board_id: boardid },
-      order: {
-        order: 'ASC',
-      },
     });
     return columns;
   }
@@ -110,12 +107,13 @@ export class BoardColumnService {
     await this.deleteorder(currentOrder, maxOrder, boardid);
     await this.boardcolumnRepository.delete(columnid);
   }
+
   private async checkboard(boardid: number, userid: number) {
     const board = await this.boardRepository.findOne({
-      where: { id: boardid, userId: userid },
+      where: { userId: userid },
     });
 
-    if (!board) {
+    if (!board || board.id !== boardid) {
       throw new UnauthorizedException('권한이 없습니다.');
     }
   }
