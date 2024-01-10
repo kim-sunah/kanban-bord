@@ -45,13 +45,14 @@ export class AuthService {
       select: ['userSeq', 'email', 'password'],
       where: { email: loginDto.email },
     });
-    if (_.isNil(user)) {
+    if (!user) {
       throw new UnauthorizedException('이메일을 확인해주세요.');
     }
 
     if (!(await compare(loginDto.password, user.password))) {
       throw new UnauthorizedException('비밀번호를 확인해주세요.');
     }
+    console.log(user);
 
     const payload = { email: loginDto.email, sub: user.userSeq };
     return {
