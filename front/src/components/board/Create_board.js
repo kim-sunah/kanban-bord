@@ -14,7 +14,7 @@ const Createboard = (props) => {
     const handleSubmit = () => {
         props.click()
         console.log(boardTitle, visibility, color)
-        fetch("http://54.180.109.210:4000/board/", {
+        fetch("http://localhost:4000/board", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}`

@@ -16,7 +16,9 @@ export class BoardService {
       throw new BadRequestException("모든 칸에 입력해주시기 바랍니다")
     }
     createBoardDto.userId = +user.userSeq;
-    return await this.boardRepository.save(createBoardDto)
+    const boadr_user = await this.boardRepository.save(createBoardDto)
+    await this.boarduserRepository.save({borderId : boadr_user.id , userId : boadr_user.userId})
+    return boadr_user
 
   }
 
@@ -44,6 +46,14 @@ export class BoardService {
     return result
    
 
+  }
+  async inviteDeleteUser(id: number, email : string){
+    const user = await this.userRepository.findOne({where : {email : email}})
+    if(!user){
+      throw new NotFoundException("존재하는 않는 유저입니다.")
+    }
+    await this.boarduserRepository.delete({ borderId: id, userId: user.userSeq });
+    return {statusCode : 200 , message : "sucess"}
   }
 
   async inviteUser(id: number, email : string) {

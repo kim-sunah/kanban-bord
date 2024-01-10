@@ -27,6 +27,11 @@ export class BoardController {
     return this.boardService.inviteusersearch(+boardId);
   }
 
+  @Delete(":id")
+  inviteDeleteUser(@Param('id') boardId: string,@Body('email') email : string) {
+
+    return this.boardService.inviteDeleteUser(+boardId, email);
+  }
 
   @Post(':boardId/invite')
   inviteUser(@Param('boardId') boardId: string,@Body('email') email : string) {
