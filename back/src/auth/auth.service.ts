@@ -66,8 +66,8 @@ export class AuthService {
   }
 
   async login(id: number) {
-    const accessToken = await this.createAccessToken(id);
-    return { accessToken };
+    const access_token = await this.createAccessToken(id);
+    return { access_token };
   }
 
   async findByEmail(email: string) {
@@ -78,13 +78,13 @@ export class AuthService {
     return await this.jwtService.signAsync({ id }, { expiresIn: '1d' });
   }
 
-  async verifyAccessToken(accessToken: string) {
+  async verifyAccessToken(access_token: string) {
     try {
-      const payload = await this.jwtService.verify(accessToken);
+      const payload = await this.jwtService.verify(access_token);
 
       return { success: true, id: payload.id };
     } catch (error) {
-      const payload = await this.jwtService.verify(accessToken, {
+      const payload = await this.jwtService.verify(access_token, {
         ignoreExpiration: true,
       });
 

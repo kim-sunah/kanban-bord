@@ -29,11 +29,11 @@ export class AuthController {
   @UseGuards(AuthGuard('local'))
   @Post('/login')
   async login(@Request() req, @Body() loginDto: LoginDto) {
-    const { accessToken } = await this.authService.login(req.user.id);
+    const { access_token } = await this.authService.login(req.user.id);
     return {
       statusCode: HttpStatus.OK,
       message: '로그인에 성공했습니다.',
-      accessToken,
+      access_token,
     };
   }
 }
