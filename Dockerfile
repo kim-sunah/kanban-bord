@@ -1,7 +1,7 @@
 # Dockerfile
 
 # Use an official Node runtime as a parent image
-FROM node:latest
+FROM node
 
 # Install app dependencies for back-end
 WORKDIR /app/back
