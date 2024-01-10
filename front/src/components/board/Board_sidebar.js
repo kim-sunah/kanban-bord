@@ -40,12 +40,12 @@ const Boardsidebar = () => {
     const submithandler = (event) => {
         event.preventDefault()
 
-        fetch(`http://54.180.109.210:4000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` }, body: JSON.stringify({ email: inputref.current.value }) })
+        fetch(`http://localhost:4000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` }, body: JSON.stringify({ email: inputref.current.value }) })
             .then(res => res.json()).then(resData => { setinvite(resData); console.log(resData) }).catch(err => console.log(err))
     }
 
     const deletehandler = (deleteid) => {
-        fetch(`http://54.180.109.210:4000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
+        fetch(`http://localhost:4000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
             .then(res => res.json()).then(resData => { alert("삭제에 성공했습니다.")  }).catch(err => console.log(err))
    
 
@@ -57,10 +57,10 @@ const Boardsidebar = () => {
     }
 
     useEffect(() => {
-        fetch("http://54.180.109.210:4000/user", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
+        fetch("http://localhost:4000/user", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
             .then(res => {
                 if (res.status == 200) {
-                    fetch("http://54.180.109.210:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
+                    fetch("http://localhost:4000/board", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
                         .then(res => res.json())
                         .then(resData => {
                             console.log(resData)
