@@ -182,7 +182,7 @@ const Columns = ({ boardid }) => {
           </div>
         </div>
       </div>{' '}
-      <div className="overflow-auto" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginTop: '50px' }}>
+      <div className="overflow-auto" style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px', marginTop: '50px' }}>
         {columns.map((column) => (
           <ColumnForm
             id={column.id}
