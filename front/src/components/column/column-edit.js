@@ -77,6 +77,7 @@ const Columns = ({ boardid }) => {
         },
         body: JSON.stringify({ order: targetOrder }),
       })
+	  window.location.reload()
     } catch (error) {
       console.error('Error moving column:', error.message)
     }
