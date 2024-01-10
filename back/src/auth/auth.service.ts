@@ -1,8 +1,9 @@
 import {
-  ConflictException,
+  BadRequestException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compare, hash } from 'bcrypt';
@@ -21,49 +22,83 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerDto: RegisterDto) {
-    const existingUser = await this.findByEmail(registerDto.email);
-
-    if (existingUser) {
-      throw new ConflictException('Email already exists');
+  async register({ email, password, name }: RegisterDto) {
+    // 이미 가입된 회원 확인
+    const existedUser = await this.userRepository.findOneBy({ email });
+    if (existedUser) {
+      throw new BadRequestException('이미 사용중인 이메일입니다.');
     }
 
-    const hashedPassword = await hash(registerDto.password, 10);
+    const hashedPassword = await bcrypt.hashSync(password, 10);
 
-    await this.userRepository.save({
-      ...registerDto,
+    const user = await this.userRepository.save({
+      email,
       password: hashedPassword,
+      name,
     });
+    delete user.password;
 
-    return {
-      message: 'Register success',
-    };
+    return user;
   }
 
-  async login(loginDto: LoginDto) {
-    const user = await this.userRepository.findOne({
-      select: ['userSeq', 'email', 'password'],
-      where: { email: loginDto.email },
+  async validate({ email, password }: LoginDto) {
+    const existedUser = await this.userRepository.findOne({
+      where: { email },
+      select: { userSeq: true, password: true },
     });
-    if (_.isNil(user)) {
-      throw new UnauthorizedException('이메일을 확인해주세요.');
+
+    // 회원이 존재하지 않을 때
+    if (!existedUser) {
+      throw new UnauthorizedException('존재하지 않는 이메일입니다.');
     }
 
-    if (!(await compare(loginDto.password, user.password))) {
-      throw new UnauthorizedException('비밀번호를 확인해주세요.');
+    // 비밀번호가 일치하지 않을 때
+    const isPasswordMatched = await bcrypt.compareSync(
+      password,
+      existedUser.password,
+    );
+
+    if (!isPasswordMatched) {
+      throw new UnauthorizedException('비밀번호가 일치하지 않습니다.');
     }
 
-    const payload = { email: loginDto.email, sub: user.userSeq };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return { userSeq: existedUser.userSeq };
+  }
+
+  async login(id: number) {
+    const accessToken = await this.createAccessToken(id);
+    return { accessToken };
   }
 
   async findByEmail(email: string) {
     return await this.userRepository.findOneBy({ email });
   }
 
-  async refreshAccessToken(email: string) {
-    return await this.userRepository.findOneBy({ email });
+  async createAccessToken(id: number) {
+    return await this.jwtService.signAsync({ id }, { expiresIn: '1d' });
+  }
+
+  async verifyAccessToken(accessToken: string) {
+    try {
+      const payload = await this.jwtService.verify(accessToken);
+
+      return { success: true, id: payload.id };
+    } catch (error) {
+      const payload = await this.jwtService.verify(accessToken, {
+        ignoreExpiration: true,
+      });
+
+      return { success: false, message: error.message, id: payload.id };
+    }
+  }
+
+  async verifyRefreshToken(refreshToken: string) {
+    try {
+      const payload = await this.jwtService.verify(refreshToken);
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.message };
+    }
   }
 }

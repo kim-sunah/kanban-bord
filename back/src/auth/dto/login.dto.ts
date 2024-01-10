@@ -1,11 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
+import { User } from 'src/user/entities/user.entity';
 
-export class LoginDto {
-  @IsEmail()
-  @IsNotEmpty({ message: '이메일을 입력해주세요.' })
-  email: string;
-
-  @IsString()
-  @IsNotEmpty({ message: '비밀번호를 입력해주세요.' })
-  password: string;
-}
+export class LoginDto extends PickType(User, ['email', 'password']) {}
