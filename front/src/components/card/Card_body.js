@@ -4,6 +4,7 @@ import {server} from '../../constant.js'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import CardForm from './Card_form'
+import { useParams } from 'react-router-dom'
 
 const colorBall = {red:'🔴',orange:'🟠',yellow:'🟡',green:'🟢',brown:'🟤',blue:'🔵',purple:'🟣',black:'⚫'}
 const Cardbody = (props) => {
@@ -30,6 +31,7 @@ const Cardbody = (props) => {
 	const [charges,setCharges] = useState([])
 	const [charge,setCharge] = useState(0)
 	const Authorization = 'Bearer '+window.sessionStorage.getItem("access_token")
+	const boardId = +useParams().id
 	
 	const updateCard = async (e,body) => {
 		e.preventDefault()
@@ -83,12 +85,18 @@ const Cardbody = (props) => {
 			headers:{'Content-Type':'application/json', Authorization},
 			body:JSON.stringify({email:charge})})
 		if(res.status!==201) return alert('알맞은 값이 아닙니다.')
-		setCharges([...charges, await res.json()])
+		try{ 
+			await fetch(server+`/board/${boardId}/invite`, { method: "Post", headers: { "Content-Type": "application/json", Authorization }, body: JSON.stringify({ email: charge }) })
+		}catch(e){
+			
+		}
+		const charge_ = await res.json()
+		setCharges([...charges, charge_])
 	}
 	
-	const deleteCharge = async (e,chargeSeq) => {
+	const deleteCharge = async (e,userSeq,chargeSeq) => {
 		e.preventDefault()
-		const res = await fetch(server+`/card/${cardSeq}/${chargeSeq}`, {
+		const res = await fetch(server+`/card/${cardSeq}/${userSeq}`, {
 			method:'delete', 
 			headers:{'Content-Type':'application/json', Authorization}})
 		setCharges(charges.filter(c => c.inChargeSeq!==chargeSeq))
@@ -145,7 +153,7 @@ const Cardbody = (props) => {
 					</Form>
 					{charges.map(charge => (
 							<div className='mt-1'>
-								<p style={{display:'inline'}} className='me-2'>{charge.name}</p><p style={{display:'inline'}} className='me-2'>{charge.email}</p><Button onClick={e => deleteCharge(e,charge.inChargeSeq)}>X</Button>
+								<p style={{display:'inline'}} className='me-2'>{charge.name}</p><p style={{display:'inline'}} className='me-2'>{charge.email}</p><Button onClick={e => deleteCharge(e,charge.userSeq,charge.inChargeSeq)}>X</Button>
 							</div>
 						))}
 				</Modal.Body>
