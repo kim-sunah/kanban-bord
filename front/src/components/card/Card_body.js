@@ -144,7 +144,7 @@ const Cardbody = (props) => {
 					</Form>
 					{charges.map(charge => (
 							<div className='mt-1'>
-								<p style={{display:'inline'}} className='me-2'>{charge.name}</p><Button onClick={e => deleteCharge(e,charge.inChargeSeq)}>X</Button>
+								<p style={{display:'inline'}} className='me-2'>{charge.name}</p><p style={{display:'inline'}} className='me-2'>{charge.email}</p><Button onClick={e => deleteCharge(e,charge.inChargeSeq)}>X</Button>
 							</div>
 						))}
 				</Modal.Body>
