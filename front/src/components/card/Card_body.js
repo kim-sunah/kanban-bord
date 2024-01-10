@@ -115,7 +115,7 @@ const Cardbody = (props) => {
 			
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header>
-                    <Modal.Title>{name}{colorBall[color]} ~{deadline.slice(0,10)}</Modal.Title>
+                    <Modal.Title>{name}{colorBall[color]} ~{new Date(deadline).toLocaleDateString().slice(0,10)}</Modal.Title>
                 </Modal.Header>
 				<Modal.Body>
 					{description}
