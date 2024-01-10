@@ -114,8 +114,7 @@ const Columns = ({ boardid }) => {
     setShowModal(false)
   }
   const handleColumnClick = (e,column) => {
-	  console.log(e.target.tagName)
-	  if(e.target.tagName!=='BUTTON') openModal(column)
+	  if(e.target.tagName==='DIV') openModal(column)
   }
 
   const handleDragStart = (e, column) => {
@@ -182,7 +181,7 @@ const Columns = ({ boardid }) => {
           </div>
         </div>
       </div>{' '}
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginTop: '50px' }}>
+      <div className="overflow-auto" style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginTop: '50px' }}>
         {columns.map((column) => (
           <ColumnForm
             id={column.id}

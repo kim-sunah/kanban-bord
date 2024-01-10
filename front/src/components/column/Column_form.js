@@ -10,6 +10,7 @@ function ColumnForm(props) {
   const cardStyle = {
     width: '300px',
     margin: '0 50px 0 20px',
+	flex: '0 0 300px'
   }
 	const { id:columnSeq, name, onClick, onDragStart, onDragOver, onDrop } = props
 	const [cards,setCards] = useState([])
