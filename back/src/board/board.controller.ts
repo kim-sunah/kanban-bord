@@ -23,11 +23,11 @@ export class BoardController {
   }
   @Get(":id")
   inviteusersearch(@Param('id') boardId: string){
-    console.log(boardId)
+
     return this.boardService.inviteusersearch(+boardId);
   }
 
-  @Delete(":id")
+  @Delete(":id/invite")
   inviteDeleteUser(@Param('id') boardId: string,@Body('email') email : string) {
 
     return this.boardService.inviteDeleteUser(+boardId, email);
@@ -35,6 +35,7 @@ export class BoardController {
 
   @Post(':boardId/invite')
   inviteUser(@Param('boardId') boardId: string,@Body('email') email : string) {
+   
     return this.boardService.inviteUser(+boardId, email);
   }
 
@@ -45,6 +46,7 @@ export class BoardController {
 
   @Delete(':id')
   remove(@Param('id') id: string,  @UserInfo() user : User) {
+   
     return this.boardService.remove(+id, user );
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, Res, UnauthorizedException } from '@nestjs/common';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,8 +23,25 @@ export class BoardService {
   }
 
   async find(user : User){
-   const board = await this.boardRepository.find({where : {userId : user.userSeq}})
-   return {statusCode : 200 , board}
+
+    
+    const inviteboards = await this.boarduserRepository.find({ where: { userId: user.userSeq } });
+    
+
+    const result = [];
+    for (const inviteBoard of inviteboards) {
+        const board = await this.boardRepository.findOne({where  : {id : inviteBoard.borderId}}); // Assuming boardId is the correct property name
+        if (board) {
+          result.push(board);
+        }
+    }
+    
+   return {statusCode : 200 , result}
+
+  
+ 
+
+
   }
 
   async inviteusersearch(id : number){
@@ -59,21 +76,24 @@ export class BoardService {
   async inviteUser(id: number, email : string) {
    
    const user = await this.userRepository.findOne({where : {email : email}})
-   console.log(user)
-  
+
    if(_.isNil(user)){
       throw new NotFoundException("유저를 찾을수 없습니다.")
    }
+  
    const boarduser = await this.boarduserRepository.find({where : {userId : user.userSeq , borderId : id }})
-   console.log(boarduser)
+   console.log(id)
    if(boarduser.length > 0){
     throw new BadRequestException("이미 초대된 유저입니다")
    }
+    
+  
 
    const board = await this.boardRepository.findOne({where : {id : id}})
    if(_.isNil(board)){
     throw new NotFoundException("보드를 찾을수 없습니다.")
   }
+
    
   const boardUser = this.boarduserRepository.create();  // BoardUser 엔터티는 보드와 유저 간의 매핑 역할을 하는 엔터티입니다.
   boardUser.borderId = +board.id;
@@ -96,10 +116,17 @@ export class BoardService {
 
   async remove(id: number, user : User) {
     const board = await this.boardRepository.findOne({where : {userId :  +user.userSeq , id : id}}) //추후 수정 
+ 
     if(_.isNil(board)){
       throw new UnauthorizedException("삭제할 권한이 없습니다.")
     }
-   
-    return await this.boardRepository.remove(board)
+    const boardinvites= await this.boarduserRepository.find({where : {borderId : id}})
+    for(const deleteboard of boardinvites){
+      await this.boarduserRepository.remove(deleteboard)
+
+    }
+   await this.boardRepository.remove(board)
+   return {statusCode : 200}
+    
   }
 }

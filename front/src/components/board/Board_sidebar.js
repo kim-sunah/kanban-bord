@@ -48,16 +48,16 @@ const Boardsidebar = () => {
 
     const submithandler = (event) => {
         event.preventDefault()
-
         fetch(`http://localhost:4000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` }, body: JSON.stringify({ email: inputref.current.value }) })
             .then(res => res.json()).then(resData => { setinvite(resData); console.log(resData) }).catch(err => console.log(err))
     }
 
     const deletehandler = (deleteid) => {
+        console.log(deleteid)
         fetch(`http://localhost:4000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
-            .then(res => res.json()).then(resData => { alert("삭제에 성공했습니다.") }).catch(err => console.log(err))
-
-
+            .then(res => res.json()).then(resData => { if(resData.statusCode === 200){alert("삭제에 성공했습니다.")} else{
+                alert("삭제권한이 없습니다.")
+            }}).catch(err => console.log(err))
 
     }
     const logOut = () => {
@@ -67,7 +67,7 @@ const Boardsidebar = () => {
 
     const inviteDeleteuser = (email) =>{
        
-        fetch(`http://localhost:4000/board/${id}`,{method : "DELETE" , headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}`} , body : JSON.stringify({email})})
+        fetch(`http://localhost:4000/board/${id}/invite`,{method : "DELETE" , headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}`} , body : JSON.stringify({email})})
         .then(res=>res.json()).then(resData => console.log(resData)).catch(err => console.log(err))
 
     }
@@ -81,7 +81,8 @@ const Boardsidebar = () => {
                         .then(resData => {
                             console.log(resData)
                             if (resData.statusCode === 200) {
-                                settitle(resData.board)
+                                console.log(resData)
+                                settitle(resData.result)
                             }
                         }).catch(err => console.log(err))
                 } else {
