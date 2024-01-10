@@ -30,10 +30,10 @@ export class CardService {
     return await this.cardRepository.find({ where: { columnSeq } });
   }
   
-  // 유저 이름 불러오기
-  async getName(userSeq: number){
+  // 유저 정보 불러오기
+  async getInfo(userSeq: number){
 	const user = await this.userRepository.findOne({where:{userSeq}})
-	return user? user.name:'<탈퇴한 사용자>'
+	return user? {name:user.name,email:user.email}:{name:'<탈퇴한 사용자>'}
   }
   
   // 이메일로 유저 찾기
@@ -157,7 +157,8 @@ export class CardService {
   // 카드 작업자 목록 보기
   async getChargesByCard(cardSeq: number) {
 	const charges = await this.inChargeRepository.find({where:{cardSeq}})
-	return await Promise.all(charges.map(async charge => {return {...charge,name:await this.getName(charge.userSeq)}}))
+	console.log('678ABC')
+	return await Promise.all(charges.map(async charge => {return {...charge,...await this.getInfo(charge.userSeq)}}))
   }
   
   // 작업자 삭제
