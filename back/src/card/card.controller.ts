@@ -67,9 +67,9 @@ export class CardController {
   }
   
   // 작업자 할당
-  @Post(':id/:userSeq')
-  async createCharge(@Param() params: Id) {
-	await this.cardService.createCharge(params.id, params.userSeq);
+  @Post('charge/:id')
+  async createCharge(@Param() params: Id, @Body() body) {
+	return await this.cardService.createCharge(params.id, body.email);
   }
   
   // 카드 작업자 목록 보기
