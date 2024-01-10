@@ -4,7 +4,10 @@
 FROM node:latest
 
 # Set the working directory in the container
-WORKDIR /app/back
+WORKDIR /app
+ADD . /app
+
+RUN cd back
 
 # Install app dependencies
 RUN npm install
