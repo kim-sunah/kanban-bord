@@ -46,6 +46,7 @@ const Cardbody = (props) => {
 	}
 	
 	const createComment = async e => {
+		console.log('Hoy!')
 		e.preventDefault()
 		const res = await fetch(server+`/comment/${cardSeq}`, {
 			method:'post', 
@@ -158,7 +159,7 @@ const Cardbody = (props) => {
                     <Modal.Title>댓글</Modal.Title>
                 </Modal.Header>
 				<Modal.Body>
-					<Form onSubmit={createCharge}>
+					<Form onSubmit={createComment}>
 						<Form.Group>
 							<Form.Control required onChange={e => setComment(e.target.value)} />
 						</Form.Group>

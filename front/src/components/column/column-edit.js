@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Modal, Button, Form } from 'react-bootstrap'
 import ColumnForm from './Column_form'
 
-const Columns = ({ boardid }) => {
+const Columns = (props) => {
+	const {boardid,handleShowMove} = props
   const [columns, setColumns] = useState([])
   const [newColumnName, setNewColumnName] = useState('')
   const [showModal, setShowModal] = useState(false)
@@ -188,6 +189,7 @@ const Columns = ({ boardid }) => {
             id={column.id}
             name={column.name}
             key={column.id}
+			handleShowMove={handleShowMove}
             onClick={e => handleColumnClick(e,column)}
             draggable={true}
             onDragStart={(e) => handleDragStart(e, column)}

@@ -60,7 +60,7 @@ const Boardbody = props => {
 	
 	return (
 		<Container>
-			<Columns boardid={boardId} />
+			<Columns handleShowMove={handleShowMove} boardid={boardId} />
 			<Modal show={showMove} onHide={handleCloseMove}>
 				<Modal.Header>
 					<Modal.Title>이동할 컬럼</Modal.Title>
