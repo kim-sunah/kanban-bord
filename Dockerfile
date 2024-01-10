@@ -1,5 +1,5 @@
 FROM node
 WORKDIR /app
 ADD . /app
-RUN cd back
+WORKDIR /back
 RUN ls -al
