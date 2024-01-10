@@ -41,6 +41,7 @@ export class BoardService {
       throw new NotFoundException("유저를 찾을수 없습니다.")
    }
    const boarduser = await this.boarduserRepository.find({where : {userId : user.userSeq}})
+   console.log(boarduser)
    if(boarduser){
     throw new BadRequestException("이미 초대된 유저입니다")
    }
