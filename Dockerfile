@@ -4,6 +4,8 @@
 FROM node
 
 # Install app dependencies for back-end
+WORKDIR /app
+ADD . /app
 WORKDIR /app/back
 
 RUN ls -al
