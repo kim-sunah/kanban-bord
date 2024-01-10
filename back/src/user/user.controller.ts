@@ -26,15 +26,15 @@ export class UserController {
     return user;
   }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Patch()
-  async update(@Body() updateDto: UpdateDto, @UserInfo() user: User) {
-    return await this.userService.update(updateDto, user)
-  }
+  // @UseGuards(AuthGuard('jwt'))
+  // @Patch()
+  // async update(@Body() updateDto: UpdateDto, @UserInfo() user: User) {
+  //   return await this.userService.update(updateDto, user);
+  // }
 
-  @UseGuards(AuthGuard('jwt'))
-  @Delete()
-  async delete(@UserInfo() user: User) {
-    return await this.userService.delete(user);
-  }
+  // @UseGuards(AuthGuard('jwt'))
+  // @Delete()
+  // async delete(@UserInfo() user: User) {
+  //   return await this.userService.delete(user);
+  // }
 }
