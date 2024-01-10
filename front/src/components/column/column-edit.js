@@ -115,7 +115,7 @@ const Columns = ({ boardid }) => {
     setShowModal(false)
   }
   const handleColumnClick = (e,column) => {
-	  if(e.target.tagName==='DIV') openModal(column)
+	  if(e.target.tagName==='DIV' && e.target.parentNode.className.slice(0,4)==='card') openModal(column)
   }
 
   const handleDragStart = (e, column) => {

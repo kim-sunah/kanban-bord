@@ -71,28 +71,26 @@ const Cardbody = (props) => {
 	const getCharges = async () => {
 		const res = await fetch(server+`/card/${cardSeq}`, {headers:{'Content-Type':'application/json', Authorization}})
 		const charges_ = await res.json()
-		setCharges(charges_.map(charge => charge.userSeq))
+		setCharges(charges_)
 	}
 	
 	const createCharge = async e => {
 		e.preventDefault()
-		if(isNaN(charge) || charge<0 || !Number.isInteger(charge)) return alert('알맞은 값이 아닙니다.')
-		if(charges.indexOf(charge)>-1) return alert('이미 작업자 목록에 포함되어 있습니다.')
-		const res = await fetch(server+`/card/${cardSeq}/${charge}`, {
+		if(charges.filter(charge_ => charge_.email===charge).length) return alert('이미 작업자 목록에 포함되어 있습니다.')
+		const res = await fetch(server+`/card/charge/${cardSeq}`, {
 			method:'post', 
-			headers:{'Content-Type':'application/json', Authorization}})
+			headers:{'Content-Type':'application/json', Authorization},
+			body:JSON.stringify({email:charge})})
 		if(res.status!==201) return alert('알맞은 값이 아닙니다.')
-		setCharges([...charges, charge])
+		setCharges([...charges, await res.json()])
 	}
 	
-	const deleteCharge = async e => {
+	const deleteCharge = async (e,chargeSeq) => {
 		e.preventDefault()
-		if(isNaN(charge) || charge<0 || !Number.isInteger(charge)) return alert('알맞은 값이 아닙니다.')
-		if(charges.indexOf(charge)==-1) return alert('작업자 목록에 포함되어 있지 않습니다.')
-		const res = await fetch(server+`/card/${cardSeq}/${charge}`, {
+		const res = await fetch(server+`/card/${cardSeq}/${chargeSeq}`, {
 			method:'delete', 
 			headers:{'Content-Type':'application/json', Authorization}})
-		setCharges(charges.filter(c => c!==charge))
+		setCharges(charges.filter(c => c.inChargeSeq!==chargeSeq))
 	}
 	
 	useEffect(() => {
@@ -139,12 +137,16 @@ const Cardbody = (props) => {
 				<Modal.Body>
 					<Form onSubmit={createCharge}>
 						<Form.Group>
-							<Form.Control required type='number' onChange={e => setCharge(+e.target.value)} />
+							<Form.Control required placeholder='이메일 입력' onChange={e => setCharge(e.target.value)} />
 						</Form.Group>
 						<Button type='submit' className='me-2'>작업자 추가</Button>
-						<Button onClick={deleteCharge}>작업자 제외</Button>
+						
 					</Form>
-					{charges.map(charge => <p>{charge}</p>)}
+					{charges.map(charge => (
+							<div className='mt-1'>
+								<p style={{display:'inline'}} className='me-2'>{charge.name}</p><Button onClick={e => deleteCharge(e,charge.inChargeSeq)}>X</Button>
+							</div>
+						))}
 				</Modal.Body>
 				<Modal.Footer>
 					<Button onClick={handleCloseCharge}>닫기</Button>
@@ -165,7 +167,7 @@ const Cardbody = (props) => {
 					{comments.map(comment => {
 						return (
 							<div className='mt-1'>
-								<p style={{display:'inline'}}>{comment.userSeq}: {comment.body}</p><Button onClick={e => deleteComment(e,comment.commentSeq)}>X</Button>
+								<p style={{display:'inline'}} className='me-2'>{comment.name}: {comment.body}</p><Button onClick={e => deleteComment(e,comment.commentSeq)}>X</Button>
 							</div>
 						)})}
 				</Modal.Body>

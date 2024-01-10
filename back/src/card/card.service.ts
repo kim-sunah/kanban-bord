@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Card } from './entities/card.entity';
 import { InCharge } from './entities/in-charge.entity';
 import { BoardColumn } from '../column/entities/column.entity';
+import { User } from '../user/entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CardDto, UpdateCardDto } from './dto/card.dto';
 
@@ -19,12 +20,25 @@ export class CardService {
     private readonly columnRepository: Repository<BoardColumn>,
     @InjectRepository(InCharge)
     private readonly inChargeRepository: Repository<InCharge>,
+	@InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly dataSource: DataSource,
   ) {}
 
   // 특정 컬럼의 카드 목록 보기
   async getCardsByColumn(columnSeq: number) {
     return await this.cardRepository.find({ where: { columnSeq } });
+  }
+  
+  // 유저 이름 불러오기
+  async getName(userSeq: number){
+	const user = await this.userRepository.findOne({where:{userSeq}})
+	return user? user.name:'<탈퇴한 사용자>'
+  }
+  
+  // 이메일로 유저 찾기
+  async getUser(email: string){
+	return await this.userRepository.findOne({where:{email}})
   }
 
   // 특정 컬럼에 있는 카드의 포지션 중 최대값 찾기
@@ -133,13 +147,17 @@ export class CardService {
   }
   
   // 작업자 추가
-  async createCharge(cardSeq: number, userSeq: number){
-	await this.inChargeRepository.insert({cardSeq,userSeq})
+  async createCharge(cardSeq: number, email: string){
+	const user = await this.getUser(email)
+	if(!user) throw new NotFoundException('해당 유저가 존재하지 않습니다.')
+	const charge = await this.inChargeRepository.insert({cardSeq,userSeq:user.userSeq})
+	return {...charge,name:user.name}
   }
   
   // 카드 작업자 목록 보기
   async getChargesByCard(cardSeq: number) {
-	return await this.inChargeRepository.find({where:{cardSeq}})
+	const charges = await this.inChargeRepository.find({where:{cardSeq}})
+	return await Promise.all(charges.map(async charge => {return {...charge,name:await this.getName(charge.userSeq)}}))
   }
   
   // 작업자 삭제
