@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button'
 const colors = [['red','빨강🔴'],['orange','오렌지🟠'],['yellow','노랑🟡'],['green','초록🟢'],['brown','갈색🟤'],['blue','파랑🔵'],['purple','보라🟣'],['black','검정⚫']]
 const CardForm = props => {
 	const [name,setName] = useState(props.name||'')
-	const [color,setColor] = useState(props.color||'')
+	const [color,setColor] = useState(props.color||'red')
 	const [description,setDescription] = useState(props.description||'')
 	const [deadline,setDeadline] = useState(props.deadline||'')
 	

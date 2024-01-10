@@ -6,13 +6,22 @@ import {
 import { Comment } from './entities/comment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, QueryFailedError } from 'typeorm';
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class CommentService {
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
+	@InjectRepository(User)
+    private readonly userRepository: Repository<User>
   ) {}
+  
+  // 유저 이름 불러오기
+  async getName(userSeq: number){
+	const user = await this.userRepository.findOne({where:{userSeq}})
+	return user? user.name:'<탈퇴한 사용자>'
+  }
 
   // 댓글 쓰기
   async createComment(body: string, userSeq: number, cardSeq: number) {
@@ -27,7 +36,8 @@ export class CommentService {
 
   // 특정 카드의 댓글 목록 보기
   async getCommentsByCard(cardSeq: number) {
-    return await this.commentRepository.find({ where: { cardSeq } });
+    const comments = await this.commentRepository.find({ where: { cardSeq } });
+	return await Promise.all(comments.map(async comment => {return {...comment,name:await this.getName(comment.userSeq)}}))
   }
 
   // 댓글 삭제
