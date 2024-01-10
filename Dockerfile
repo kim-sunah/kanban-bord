@@ -8,7 +8,7 @@ WORKDIR /app
 ADD . /app
 WORKDIR /app/back
 
-RUN ls -al
+RUN npm install
 # RUN npm install
 
 # # Move back to the root directory
