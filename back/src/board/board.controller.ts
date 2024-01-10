@@ -24,9 +24,9 @@ export class BoardController {
   @Get(":id")
   inviteusersearch(@Param('id') boardId: string){
     console.log(boardId)
-    return this.boardService.inviteusersearch(+boardId)
-
+    return this.boardService.inviteusersearch(+boardId);
   }
+
 
   @Post(':boardId/invite')
   inviteUser(@Param('boardId') boardId: string,@Body('email') email : string) {

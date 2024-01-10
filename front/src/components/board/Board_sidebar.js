@@ -22,6 +22,7 @@ const Boardsidebar = () => {
     const [create, setcreate] = useState(false);
     const [title, settitle] = useState([])
     const [invite, setinvite] = useState()
+    const [inviteuser, setinviteuser] = useState()
     const { id } = useParams()
     const navigate = useNavigate()
 
@@ -36,28 +37,26 @@ const Boardsidebar = () => {
     const handleShow = () => setShow(true);
     const membershows = () => {
         setmembershow(true)
-        console.log(sessionStorage.getItem("access_token"))
-       
-            fetch(`http://localhost:4000/board/1`,{ method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}`} })
-            .then(res => res.json())
-            .then(resData => console.log(resData))
-            .catch(err => console.log(err))
-
-        
+        if (id) {
+            fetch(`http://localhost:4000/board/${id}`, { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
+                .then(res => res.json())
+                .then(resData => setinviteuser(resData))
+                .catch(err => console.log(err))
+        }
     };
     const createshow = () => setcreate(!create)
 
     const submithandler = (event) => {
         event.preventDefault()
 
-        fetch(`http://54.180.109.210:4000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` }, body: JSON.stringify({ email: inputref.current.value }) })
+        fetch(`http://localhost:4000/board/${id}/invite`, { method: "Post", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` }, body: JSON.stringify({ email: inputref.current.value }) })
             .then(res => res.json()).then(resData => { setinvite(resData); console.log(resData) }).catch(err => console.log(err))
     }
 
     const deletehandler = (deleteid) => {
         fetch(`http://54.180.109.210:4000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
-            .then(res => res.json()).then(resData => { alert("삭제에 성공했습니다.")  }).catch(err => console.log(err))
-   
+            .then(res => res.json()).then(resData => { alert("삭제에 성공했습니다.") }).catch(err => console.log(err))
+
 
 
     }
@@ -101,7 +100,7 @@ const Boardsidebar = () => {
                 </li>
                 <li className={classes.li}>
                     <AiOutlineUser size="30" />
-                    <span className={classes.text} onClick={membershows} style={{cursor :"pointer"}}>Members</span>
+                    <span className={classes.text} onClick={membershows} style={{ cursor: "pointer" }}>Members</span>
                     <AiOutlinePlus size="30" onClick={handleShow} style={{ cursor: "pointer" }} />
                 </li>
                 <li className={classes.li} >
@@ -154,11 +153,15 @@ const Boardsidebar = () => {
             </Modal>
 
 
-            
+
             <Modal show={membershow} onHide={memberClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>invite user</Modal.Title>
                 </Modal.Header>
+                {inviteuser && inviteuser.map(user => (
+                    <li className={classes.inviteuser}>{user.email}<BsTrash style={{marginLeft:"10%"}}></BsTrash></li>
+                ))}
+                 
             </Modal>
         </div>
 

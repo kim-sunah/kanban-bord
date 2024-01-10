@@ -30,15 +30,19 @@ li{
   }
 .create{
     text-align: center;
-
-    
 }
 
 .create input{
     border-radius: 5%;
 }
 
-.Link{
+.Link {
     list-style: none;
     margin-right: 20%;
+}
+
+.inviteuser{
+    list-style: none;
+    text-align: center;
+    margin-right: 10%;
 }
