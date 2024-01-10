@@ -65,6 +65,13 @@ const Boardsidebar = () => {
         return navigate('/')
     }
 
+    const inviteDeleteuser = (email) =>{
+       
+        fetch(`http://localhost:4000/board/${id}`,{method : "DELETE" , headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}`} , body : JSON.stringify({email})})
+        .then(res=>res.json()).then(resData => console.log(resData)).catch(err => console.log(err))
+
+    }
+
     useEffect(() => {
         fetch("http://localhost:4000/user", { method: "GET", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
             .then(res => {
@@ -159,7 +166,7 @@ const Boardsidebar = () => {
                     <Modal.Title>invite user</Modal.Title>
                 </Modal.Header>
                 {inviteuser && inviteuser.map(user => (
-                    <li className={classes.inviteuser}>{user.email}<BsTrash style={{marginLeft:"10%"}}></BsTrash></li>
+                    <li className={classes.inviteuser}>{user.email}<BsTrash style={{marginLeft:"10%"}} onClick={() => inviteDeleteuser(user.email)}></BsTrash></li>
                 ))}
                  
             </Modal>
