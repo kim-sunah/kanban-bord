@@ -20,7 +20,8 @@ const Createboard = (props) => {
                 "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}`
             },
             body: JSON.stringify({ name: boardTitle, description: visibility, color: color })
-        }).then(res => res.json()).then(resData => console.log(resData)).catch(err => console.log(err))
+        }).then(res => res.json()).then(resData => {window.location.reload();}).catch(err => console.log(err))
+
     };
 
     return (

@@ -55,7 +55,11 @@ const Boardsidebar = () => {
     const deletehandler = (deleteid) => {
         console.log(deleteid)
         fetch(`http://localhost:4000/board/${deleteid}`, { method: "Delete", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("access_token")}` } })
-            .then(res => res.json()).then(resData => { if(resData.statusCode === 200){alert("삭제에 성공했습니다.")} else{
+            .then(res => res.json()).then(resData => { if(resData.statusCode === 200){
+				alert("삭제에 성공했습니다.");
+				navigate("/board");   
+				window.location.reload();
+			} else{
                 alert("삭제권한이 없습니다.")
             }}).catch(err => console.log(err))
 
