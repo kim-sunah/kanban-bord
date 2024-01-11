@@ -102,28 +102,14 @@ const Boardsidebar = () => {
                     <span className={classes.text}>Log Out</span>
                     <CiLogout onClick={() => logOut()} style={{ cursor: "pointer" }} />
                 </li>
-                <li className={classes.li}>
-                    <BsClipboard2 size="30"></BsClipboard2>
-                    <span className={classes.text}>Boards</span>
-                </li>
+            
                 <li className={classes.li}>
                     <AiOutlineUser size="30" />
                     <span className={classes.text} onClick={membershows} style={{ cursor: "pointer" }}>Members</span>
                     <AiOutlinePlus size="30" onClick={handleShow} style={{ cursor: "pointer" }} />
                 </li>
-                <li className={classes.li} >
-
-                    Workspace views
-
-                </li>
-                <li>
-                    <TbAlignBoxCenterStretch size="30" />
-                    <span className={classes.text}>table</span>
-                </li>
-                <li >
-                    <TbCalendar size="30" />
-                    <span className={classes.text}>calendar</span>
-                </li>
+           
+           
 
 
 
