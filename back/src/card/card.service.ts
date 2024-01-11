@@ -150,14 +150,14 @@ export class CardService {
   async createCharge(cardSeq: number, email: string){
 	const user = await this.getUser(email)
 	if(!user) throw new NotFoundException('해당 유저가 존재하지 않습니다.')
-	const charge = await this.inChargeRepository.insert({cardSeq,userSeq:user.userSeq})
-	return {...charge,name:user.name}
+	const userSeq = user.userSeq
+	const charge = await this.inChargeRepository.save({cardSeq,userSeq})
+	return {...charge,name:user.name,email:user.email}
   }
   
   // 카드 작업자 목록 보기
   async getChargesByCard(cardSeq: number) {
 	const charges = await this.inChargeRepository.find({where:{cardSeq}})
-	console.log('678ABC')
 	return await Promise.all(charges.map(async charge => {return {...charge,...await this.getInfo(charge.userSeq)}}))
   }
   

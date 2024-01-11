@@ -9,7 +9,9 @@ import Form from 'react-bootstrap/Form'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Columns from '../column/column-edit'
+import ReactDOM from 'react-dom'
 
+const colors = [['','🌈'],['red','🔴'],['orange','🟠'],['yellow','🟡'],['green','🟢'],['brown','🟤'],['blue','🔵'],['purple','🟣'],['black','⚫']]
 const Boardbody = props => {
 	const navigate = useNavigate()
 	const Authorization = 'Bearer '+window.sessionStorage.getItem("access_token")
@@ -58,8 +60,19 @@ const Boardbody = props => {
 		 window.location.reload()
 	}
 	
+	const [color,setColor] = useState('')
+	const filter = e =>	setColor(e.target.value)
+	useEffect(() => {
+		const node = document.querySelectorAll('.kanbanCard')
+		if(!color) node.forEach(card => card.hidden = false)
+		else node.forEach(card => card.hidden = color!==card.children[0].style.getPropertyValue('background-color'))
+	}, [color])
+	
 	return (
 		<Container>
+			<div>
+				{colors.map(color => <Button variant="outline-light" value={color[0]} onClick={filter}>{color[1]}</Button>)}
+			</div>
 			<Columns handleShowMove={handleShowMove} boardid={boardId} />
 			<Modal show={showMove} onHide={handleCloseMove}>
 				<Modal.Header>
